@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking';
 import { LinkingOptions } from '@react-navigation/native';
-import { RootStackParamList } from './RootNavigator';
+import { RootStackParamList } from './types';
 
 const prefix = Linking.createURL('/');
 
@@ -11,16 +11,27 @@ export const linking: LinkingOptions<RootStackParamList> = {
             Splash: 'splash',
             MainTabs: {
                 screens: {
-                    TiffinsTab: {
+                    RestaurantsStack: {
                         screens: {
-                            TiffinList: 'tiffin',
-                            TiffinDetail: 'tiffin/:tiffinId',
+                            RestaurantList: 'restaurant',
+                            RestaurantDetail: 'restaurant/:id',
                         },
                     },
-                    CollectionsTab: {
+                    TiffinStack: {
                         screens: {
-                            CollectionList: 'collection',
-                            CollectionDetail: 'collection/:slug',
+                            TiffinList: 'tiffin',
+                            TiffinDetail: 'tiffin/:id',
+                        },
+                    },
+                    EventsStack: {
+                        screens: {
+                            EventList: 'event',
+                            EventDetail: 'event/:id',
+                        },
+                    },
+                    SettingsStack: {
+                        screens: {
+                            Settings: 'settings',
                         },
                     },
                 },

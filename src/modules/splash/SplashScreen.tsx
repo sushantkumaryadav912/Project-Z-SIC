@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../core/navigation/RootNavigator';
+import { RootStackParamList } from '../../core/navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
 export const SplashScreen: React.FC<Props> = ({ navigation }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
-            navigation.replace('MainTabs');
+            navigation.replace('AuthLanding');
         }, 1500);
 
         return () => clearTimeout(timer);
