@@ -16,6 +16,7 @@ const PAGE_SIZE = 8;
 
 export const RestaurantListScreen: React.FC<Props> = ({ navigation }) => {
     const { data: restaurants = [], isLoading, isError, refetch } = useRestaurants();
+    const restaurantsList = Array.isArray(restaurants) ? restaurants : [];
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     const [selectedCuisine, setSelectedCuisine] = useState<string | null>(null);
@@ -64,15 +65,15 @@ export const RestaurantListScreen: React.FC<Props> = ({ navigation }) => {
 
     const cuisineOptions = useMemo(() => {
         const set = new Set<string>();
-        restaurants.forEach((item) => {
+        restaurantsList.forEach((item) => {
             getCuisineTags(item).forEach((tag) => set.add(tag));
         });
         return Array.from(set).slice(0, 10);
-    }, [restaurants]);
+    }, [restaurantsList]);
 
     const filteredRestaurants = useMemo(() => {
         const lowerQuery = debouncedQuery.toLowerCase();
-        return restaurants.filter((item) => {
+        return restaurantsList.filter((item) => {
             const cuisines = getCuisineTags(item);
             const searchable = [item.name, item.description, ...cuisines].filter(Boolean).join(' ').toLowerCase();
             if (lowerQuery && !searchable.includes(lowerQuery)) return false;
@@ -87,7 +88,7 @@ export const RestaurantListScreen: React.FC<Props> = ({ navigation }) => {
             }
             return true;
         });
-    }, [restaurants, debouncedQuery, selectedCuisine, vegOnly, priceFilter]);
+    }, [restaurantsList, debouncedQuery, selectedCuisine, vegOnly, priceFilter]);
 
     const visibleRestaurants = filteredRestaurants.slice(0, visibleCount);
     const hasMore = visibleCount < filteredRestaurants.length;

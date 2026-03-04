@@ -16,7 +16,7 @@ type GuestSession = {
 const GUEST_CREDENTIALS: GuestCredentials = {
     username: 'Guest',
     email: 'guest@gmail.com',
-    password: 'guest',
+    password: 'Guest@123',
 };
 
 const GUEST_SESSION_KEY = 'sic_guest_session';

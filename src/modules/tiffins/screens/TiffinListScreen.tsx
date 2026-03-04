@@ -14,6 +14,7 @@ type Props = NativeStackScreenProps<TiffinStackParamList, 'TiffinList'>;
 
 export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
     const { data: tiffins = [], isLoading, isError, refetch } = useTiffins();
+    const tiffinsList = Array.isArray(tiffins) ? tiffins : [];
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     const [vegOnly, setVegOnly] = useState(false);
@@ -42,7 +43,7 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
 
     const filteredTiffins = useMemo(() => {
         const lowerQuery = debouncedQuery.toLowerCase();
-        return tiffins.filter((item) => {
+        return tiffinsList.filter((item) => {
             const searchable = [item.name, item.shortDescription, ...(item.mealPlans || [])]
                 .filter(Boolean)
                 .join(' ')
@@ -58,7 +59,7 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
             }
             return true;
         });
-    }, [tiffins, debouncedQuery, vegOnly, priceFilter]);
+    }, [tiffinsList, debouncedQuery, vegOnly, priceFilter]);
 
     const renderItem = ({ item }: { item: Tiffin }) => {
         const imageUrl = item.imageUrl;
