@@ -3,6 +3,19 @@
   "compilerOptions": {
     "strict": true,
     "module": "ESNext",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/app/*": ["src/app/*"],
+      "@/platform/*": ["src/platform/*"],
+      "@/domains/*": ["src/domains/*"],
+      "@/ui/*": ["src/ui/*"],
+      "@/services/*": ["src/services/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/store/*": ["src/store/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/types/*": ["src/types/*"]
+    }
   }
 }
