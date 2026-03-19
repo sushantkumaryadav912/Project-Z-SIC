@@ -203,9 +203,9 @@ export const RestaurantListScreen: React.FC<Props> = ({ navigation }) => {
 
     return (
         <View className="flex-1 bg-[#f2f6f6]">
-            <View className="bg-[#e6f4f4] px-5 pt-12 pb-6">
-                <View className="absolute right-[-40px] top-[-20px] h-32 w-32 rounded-full bg-[#d6efef]" />
-                <View className="absolute left-[-30px] bottom-[-30px] h-24 w-24 rounded-full bg-[#d6efef]" />
+            <View className="bg-[#e6f4f4] px-5 pt-12 pb-6" style={{ overflow: 'visible' }}>
+                <View style={{ position: 'absolute', right: 0, top: 0, height: 128, width: 128, borderRadius: 64, backgroundColor: '#d6efef' }} />
+                <View style={{ position: 'absolute', left: 0, bottom: 0, height: 96, width: 96, borderRadius: 48, backgroundColor: '#d6efef' }} />
                 <ScreenHeader
                     title="Restaurants"
                     subtitle="Takeaway and dining picks"
@@ -232,7 +232,7 @@ export const RestaurantListScreen: React.FC<Props> = ({ navigation }) => {
             </View>
 
             {showSortMenu && (
-                <View className="bg-white mx-5 rounded-2xl shadow-lg mb-2" style={{ elevation: 4 }}>
+                <View style={{ position: 'absolute', top: 60, right: 20, zIndex: 100, backgroundColor: 'white', borderRadius: 16, elevation: 8, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, minWidth: 200 }}>
                     {sortOptions.map((option) => (
                         <TouchableOpacity
                             key={option.value}
@@ -251,7 +251,7 @@ export const RestaurantListScreen: React.FC<Props> = ({ navigation }) => {
                 </View>
             )}
 
-            <View className="px-5 -mt-4">
+            <View className="px-5 -mt-4" style={{ zIndex: 1 }}>
                 <View className="bg-white rounded-3xl p-4 shadow-sm" style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }}>
                     <Text className="text-sm font-semibold text-gray-800">Quick filters</Text>
                     <View className="flex-row mt-3">

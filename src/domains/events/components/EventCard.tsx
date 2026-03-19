@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import { Event } from '@/domains/events/types';
 
 interface EventCardProps {
@@ -33,26 +33,49 @@ export const EventCard = memo<EventCardProps>(({ item, onPress }) => {
     return (
         <TouchableOpacity
             data-testid={`event-card-${item._id}`}
-            className="bg-white rounded-3xl overflow-hidden mb-4 shadow-sm"
-            style={{ shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 10, elevation: 2 }}
+            activeOpacity={0.92}
+            style={{
+                backgroundColor: '#fff',
+                borderRadius: 24,
+                overflow: 'hidden',
+                marginBottom: 18,
+                shadowColor: '#6d28d9',
+                shadowOpacity: 0.10,
+                shadowRadius: 16,
+                shadowOffset: { width: 0, height: 4 },
+                elevation: 4,
+            }}
             onPress={() => onPress(item._id || 'unknown')}
         >
-            <View className="h-40 bg-gray-100">
+            {/* Image Section */}
+            <View style={{ height: 180, backgroundColor: '#ede9fe' }}>
                 {imageUrl ? (
-                    <Image source={{ uri: imageUrl }} className="h-40 w-full" />
+                    <ImageBackground source={{ uri: imageUrl }} style={{ flex: 1 }} resizeMode="cover">
+                        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 80, backgroundColor: 'rgba(0,0,0,0.32)' }} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 12 }}>
+                            {item.category && (
+                                <View style={{ backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
+                                    <Text style={{ color: '#6d28d9', fontSize: 11, fontWeight: '700' }}>{item.category}</Text>
+                                </View>
+                            )}
+                            {ended && (
+                                <View style={{ marginLeft: 'auto', backgroundColor: '#dc2626', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
+                                    <Text style={{ color: '#fff', fontSize: 10, fontWeight: '700' }}>ENDED</Text>
+                                </View>
+                            )}
+                        </View>
+                    </ImageBackground>
                 ) : (
-                    <View className="flex-1 items-center justify-center">
-                        <Text className="text-xs text-gray-500">No image</Text>
-                    </View>
-                )}
-                {ended && (
-                    <View className="absolute top-3 right-3 bg-red-600 px-2 py-1 rounded-full">
-                        <Text className="text-xs font-semibold text-white">Event Ended</Text>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 40 }}>🎪</Text>
+                        <Text style={{ fontSize: 12, color: '#9ca3af', marginTop: 6 }}>No image available</Text>
                     </View>
                 )}
             </View>
-            <View className="p-4">
-                <Text className="text-base font-bold text-gray-900" numberOfLines={1}>
+
+            {/* Info Section */}
+            <View style={{ padding: 16 }}>
+                <Text style={{ fontSize: 17, fontWeight: '800', color: '#111827' }} numberOfLines={1}>
                     {item.name || item.title || 'Unnamed Event'}
                 </Text>
                 {item.date && (

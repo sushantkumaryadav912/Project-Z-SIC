@@ -22,24 +22,27 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
     const navigation = useNavigation<NavigationProp>();
 
     return (
-        <View className="px-5 pt-6 pb-3">
-            <View className="flex-row items-center justify-between">
-                <Text className="text-2xl font-bold text-gray-900">{title}</Text>
-                <View className="flex-row items-center">
+        <View style={{ paddingTop: 8, paddingBottom: 4 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 28, fontWeight: '900', color: '#111827', letterSpacing: -0.5 }}>{title}</Text>
+                    {subtitle ? (
+                        <Text style={{ fontSize: 13, color: '#6b7280', marginTop: 3, fontWeight: '500', letterSpacing: 0.1 }}>{subtitle}</Text>
+                    ) : null}
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginLeft: 12 }}>
                     {showSearch && (
                         <TouchableOpacity
                             data-testid="search-icon-button"
                             onPress={() => navigation.navigate('Search')}
-                            className="bg-white rounded-full px-3 py-2 mr-2"
-                            style={{ shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 }}
+                            style={{ backgroundColor: 'rgba(255,255,255,0.85)', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 4, elevation: 2 }}
                         >
-                            <Text className="text-xs font-semibold text-gray-700">Search</Text>
+                            <Text style={{ fontSize: 12, fontWeight: '700', color: '#374151' }}>🔍 Search</Text>
                         </TouchableOpacity>
                     )}
                     {rightSlot}
                 </View>
             </View>
-            {subtitle ? <Text className="text-sm text-gray-600 mt-1">{subtitle}</Text> : null}
         </View>
     );
 };

@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import { Tiffin } from '@/domains/tiffins/types';
 
 interface TiffinCardProps {
@@ -24,37 +24,62 @@ export const TiffinCard = memo<TiffinCardProps>(({ item, onPress }) => {
     return (
         <TouchableOpacity
             data-testid={`tiffin-card-${item._id}`}
-            className="bg-white rounded-3xl overflow-hidden mb-4 shadow-sm"
-            style={{ shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 10, elevation: 2 }}
+            activeOpacity={0.92}
+            style={{
+                backgroundColor: '#fff',
+                borderRadius: 24,
+                overflow: 'hidden',
+                marginBottom: 18,
+                shadowColor: '#b45309',
+                shadowOpacity: 0.10,
+                shadowRadius: 16,
+                shadowOffset: { width: 0, height: 4 },
+                elevation: 4,
+            }}
             onPress={() => onPress(item._id || 'unknown')}
         >
-            <View className="h-40 bg-gray-100">
+            {/* Image Section */}
+            <View style={{ height: 180, backgroundColor: '#fef3e2' }}>
                 {imageUrl ? (
-                    <Image source={{ uri: imageUrl }} className="h-40 w-full" />
+                    <ImageBackground source={{ uri: imageUrl }} style={{ flex: 1 }} resizeMode="cover">
+                        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 80, backgroundColor: 'rgba(0,0,0,0.32)' }} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 12 }}>
+                            {item.vegOnly && (
+                                <View style={{ backgroundColor: '#16a34a', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
+                                    <Text style={{ color: '#fff', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 }}>🌿 VEG ONLY</Text>
+                                </View>
+                            )}
+                            {priceValue !== null && (
+                                <View style={{ marginLeft: 'auto', backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
+                                    <Text style={{ color: '#b45309', fontSize: 11, fontWeight: '700' }}>₹{priceValue} / meal</Text>
+                                </View>
+                            )}
+                        </View>
+                    </ImageBackground>
                 ) : (
-                    <View className="flex-1 items-center justify-center">
-                        <Text className="text-xs text-gray-500">No image</Text>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 40 }}>🍱</Text>
+                        <Text style={{ fontSize: 12, color: '#9ca3af', marginTop: 6 }}>No image available</Text>
                     </View>
                 )}
             </View>
-            <View className="p-4">
-                <Text className="text-base font-bold text-gray-900" numberOfLines={1}>
+
+            {/* Info Section */}
+            <View style={{ padding: 16 }}>
+                <Text style={{ fontSize: 17, fontWeight: '800', color: '#111827' }} numberOfLines={1}>
                     {item.name || 'Unnamed Tiffin'}
                 </Text>
                 {item.shortDescription && (
-                    <Text className="text-sm text-gray-600 mt-1" numberOfLines={2}>
+                    <Text style={{ fontSize: 12, color: '#6b7280', marginTop: 8, lineHeight: 18 }} numberOfLines={2}>
                         {item.shortDescription}
                     </Text>
                 )}
-                <View className="flex-row items-center justify-between mt-3">
-                    {priceValue !== null && (
-                        <Text className="text-xs font-semibold text-[#02757A]">₹{priceValue} / meal</Text>
-                    )}
-                    {item.vegOnly && (
-                        <View className="bg-emerald-50 px-2 py-1 rounded-full">
-                            <Text className="text-[11px] font-semibold text-emerald-700">Veg Only</Text>
-                        </View>
-                    )}
+                <View style={{ height: 1, backgroundColor: '#f3f4f6', marginTop: 12, marginBottom: 10 }} />
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 12, color: '#9ca3af', fontWeight: '500' }}>Tap to explore plans</Text>
+                    <View style={{ backgroundColor: '#b45309', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}>
+                        <Text style={{ color: '#fff', fontSize: 12, fontWeight: '700' }}>View →</Text>
+                    </View>
                 </View>
             </View>
         </TouchableOpacity>
