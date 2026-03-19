@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { Restaurant } from '@/domains/restaurants/types';
+import { useAppSelector } from '@/hooks/useAppStore';
 
 interface RestaurantCardProps {
     item: Restaurant;
@@ -8,6 +9,9 @@ interface RestaurantCardProps {
 }
 
 export const RestaurantCard = memo<RestaurantCardProps>(({ item, onPress }) => {
+    const theme = useAppSelector((state) => state.ui.theme);
+    const isDark = theme === 'dark';
+
     const getCuisineTags = (item: Restaurant) => {
         if (Array.isArray(item.cuisineTags)) return item.cuisineTags;
         if (Array.isArray(item.cuisines)) return item.cuisines;
@@ -39,25 +43,25 @@ export const RestaurantCard = memo<RestaurantCardProps>(({ item, onPress }) => {
     return (
         <TouchableOpacity
             data-testid={`restaurant-card-${item._id}`}
-            className="bg-white rounded-3xl overflow-hidden mb-4 shadow-sm"
-            style={{ shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 10, elevation: 2 }}
+            className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden mb-4 shadow-sm"
+            style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 10, elevation: 2 }]}
             onPress={() => onPress(item._id || 'unknown')}
         >
-            <View className="h-40 bg-gray-100">
+            <View className="h-40 bg-gray-100 dark:bg-gray-800">
                 {imageUrl ? (
                     <Image source={{ uri: imageUrl }} className="h-40 w-full" />
                 ) : (
                     <View className="flex-1 items-center justify-center">
-                        <Text className="text-xs text-gray-500">No image</Text>
+                        <Text className="text-xs text-gray-500 dark:text-gray-400">No image</Text>
                     </View>
                 )}
             </View>
             <View className="p-4">
-                <Text className="text-base font-bold text-gray-900" numberOfLines={1}>
+                <Text className="text-base font-bold text-gray-900 dark:text-gray-50" numberOfLines={1}>
                     {item.name || 'Unnamed Restaurant'}
                 </Text>
                 {cuisines.length > 0 && (
-                    <Text className="text-sm text-gray-600 mt-1" numberOfLines={1}>
+                    <Text className="text-sm text-gray-600 dark:text-gray-300 mt-1" numberOfLines={1}>
                         {cuisines.join(' • ')}
                     </Text>
                 )}
@@ -65,8 +69,8 @@ export const RestaurantCard = memo<RestaurantCardProps>(({ item, onPress }) => {
                     <Text className="text-xs font-semibold text-[#02757A] mt-2">From ₹{priceValue}</Text>
                 )}
                 {isVegRestaurant(item) && (
-                    <View className="mt-2 bg-emerald-50 px-2 py-1 rounded-full self-start">
-                        <Text className="text-[11px] font-semibold text-emerald-700">Pure Veg</Text>
+                    <View className="mt-2 bg-emerald-50 dark:bg-emerald-950 px-2 py-1 rounded-full self-start">
+                        <Text className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">Pure Veg</Text>
                     </View>
                 )}
             </View>

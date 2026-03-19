@@ -11,11 +11,15 @@ import { ErrorState } from '@/ui/components/ErrorState';
 import { LoadingSkeletonList } from '@/ui/components/LoadingSkeletonList';
 import { ScreenHeader } from '@/ui/components/ScreenHeader';
 import { storage } from '@/services/storage/localStorage';
+import { useAppSelector } from '@/hooks/useAppStore';
 
 type Props = NativeStackScreenProps<EventsStackParamList, 'EventList'>;
 type SortOption = 'default' | 'date-asc' | 'date-desc' | 'price-low' | 'price-high';
 
 export const EventListScreen: React.FC<Props> = ({ navigation }) => {
+    const theme = useAppSelector((state) => state.ui.theme);
+    const isDark = theme === 'dark';
+
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
@@ -161,10 +165,10 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
         <TouchableOpacity
             key={label}
             data-testid={`filter-chip-${label.toLowerCase().replace(/\s+/g, '-')}`}
-            className={`mr-2 rounded-full border px-3 py-2 ${active ? 'bg-[#02757A] border-[#02757A]' : 'bg-white border-gray-200'}`}
+            className={`mr-2 mb-2 rounded-full border px-3 py-2 ${active ? 'bg-[#02757A] border-[#02757A]' : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700'}`}
             onPress={onPress}
         >
-            <Text className={`text-xs font-semibold ${active ? 'text-white' : 'text-gray-700'}`}>{label}</Text>
+            <Text className={`text-xs font-semibold ${active ? 'text-white' : 'text-gray-700 dark:text-gray-200'}`}>{label}</Text>
         </TouchableOpacity>
     );
 
@@ -208,10 +212,10 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
     ];
 
     return (
-        <View className="flex-1 bg-[#f2f6f6]">
-            <View className="bg-[#efe9f6] px-5 pt-12 pb-6">
-                <View className="absolute right-[-30px] top-[-20px] h-28 w-28 rounded-full bg-[#e3daf0]" />
-                <View className="absolute left-[-20px] bottom-[-30px] h-24 w-24 rounded-full bg-[#e3daf0]" />
+        <View className="flex-1 bg-[#f2f6f6] dark:bg-gray-950">
+            <View className="bg-[#efe9f6] dark:bg-gray-900 px-5 pt-12 pb-6">
+                <View className="absolute right-[-30px] top-[-20px] h-28 w-28 rounded-full bg-[#e3daf0] dark:bg-gray-800" />
+                <View className="absolute left-[-20px] bottom-[-30px] h-24 w-24 rounded-full bg-[#e3daf0] dark:bg-gray-800" />
                 <ScreenHeader
                     title="Events"
                     subtitle="Live shows and community meetups"
@@ -219,17 +223,17 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
                         <TouchableOpacity
                             data-testid="sort-button"
                             onPress={() => setShowSortMenu(!showSortMenu)}
-                            className="bg-white rounded-full px-4 py-2"
-                            style={{ shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 6, elevation: 2 }}
+                            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-full px-4 py-2"
+                            style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 6, elevation: 2 }]}
                         >
-                            <Text className="text-xs font-semibold text-gray-700">Sort ▼</Text>
+                            <Text className="text-xs font-semibold text-gray-700 dark:text-gray-200">Sort ▼</Text>
                         </TouchableOpacity>
                     }
                 />
                 <View className="mt-4">
                     <TextInput
                         data-testid="search-input"
-                        className="bg-white px-4 py-3 rounded-2xl text-base text-gray-900"
+                        className="bg-white dark:bg-gray-900 px-4 py-3 rounded-2xl text-base text-gray-900 dark:text-gray-50"
                         placeholder="Search events, venues, or categories"
                         value={query}
                         onChangeText={setQuery}
@@ -238,18 +242,21 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
             </View>
 
             {showSortMenu && (
-                <View className="bg-white mx-5 rounded-2xl shadow-lg mb-2" style={{ elevation: 4 }}>
+                <View
+                    className="bg-white dark:bg-gray-900 mx-5 rounded-2xl mb-2 border border-gray-100 dark:border-gray-800"
+                    style={{ elevation: isDark ? 0 : 4 }}
+                >
                     {sortOptions.map((option) => (
                         <TouchableOpacity
                             key={option.value}
                             data-testid={`sort-option-${option.value}`}
-                            className={`px-4 py-3 border-b border-gray-100 ${sortBy === option.value ? 'bg-[#02757A]/10' : ''}`}
+                            className={`px-4 py-3 border-b border-gray-100 dark:border-gray-800 ${sortBy === option.value ? 'bg-[#02757A]/10' : ''}`}
                             onPress={() => {
                                 setSortBy(option.value as SortOption);
                                 setShowSortMenu(false);
                             }}
                         >
-                            <Text className={`text-sm font-semibold ${sortBy === option.value ? 'text-[#02757A]' : 'text-gray-900'}`}>
+                            <Text className={`text-sm font-semibold ${sortBy === option.value ? 'text-[#02757A]' : 'text-gray-900 dark:text-gray-50'}`}>
                                 {option.label}
                             </Text>
                         </TouchableOpacity>
@@ -258,12 +265,15 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
             )}
 
             <View className="px-5 -mt-4">
-                <View className="bg-white rounded-3xl p-4 shadow-sm" style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }}>
+                <View
+                    className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-4 shadow-sm"
+                    style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }]}
+                >
                     <View className="flex-row items-center justify-between">
-                        <Text className="text-sm font-semibold text-gray-800">Quick filters</Text>
-                        <Text className="text-xs text-gray-500">{filteredCount} events</Text>
+                        <Text className="text-sm font-semibold text-gray-800 dark:text-gray-200">Quick filters</Text>
+                        <Text className="text-xs text-gray-500 dark:text-gray-400">{filteredCount} events</Text>
                     </View>
-                    <View className="flex-row mt-3">
+                    <View className="flex-row flex-wrap mt-3">
                         {renderChip('Upcoming', dateFilter === 'upcoming', () => setDateFilter(dateFilter === 'upcoming' ? null : 'upcoming'))}
                         {renderChip('This Week', dateFilter === 'week', () => setDateFilter(dateFilter === 'week' ? null : 'week'))}
                         {renderChip('Past', dateFilter === 'past', () => setDateFilter(dateFilter === 'past' ? null : 'past'))}

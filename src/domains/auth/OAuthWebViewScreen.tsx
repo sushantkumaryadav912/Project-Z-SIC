@@ -14,7 +14,7 @@ const PROVIDER_LABELS: Record<string, string> = {
 
 const APP_SCHEME = 'sic://';
 
- type Props = NativeStackScreenProps<RootStackParamList, 'OAuthWebView'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'OAuthWebView'>;
 
 export const OAuthWebViewScreen: React.FC<Props> = ({ route, navigation }) => {
     const { provider, rememberMe } = route.params;
@@ -47,13 +47,13 @@ export const OAuthWebViewScreen: React.FC<Props> = ({ route, navigation }) => {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-[#f2f6f6]">
-            <View className="bg-white px-4 py-3 border-b border-gray-100">
+        <SafeAreaView className="flex-1 bg-[#f2f6f6] dark:bg-slate-950">
+            <View className="bg-white dark:bg-slate-900 px-4 py-3 border-b border-gray-100 dark:border-slate-800">
                 <View className="flex-row items-center">
                     <TouchableOpacity onPress={handleClose} className="mr-2 px-2 py-1">
-                        <Text className="text-base text-gray-700">Back</Text>
+                        <Text className="text-base text-gray-700 dark:text-slate-200">Back</Text>
                     </TouchableOpacity>
-                    <Text className="text-base font-semibold text-gray-900">Continue with {providerLabel}</Text>
+                    <Text className="text-base font-semibold text-gray-900 dark:text-slate-100">Continue with {providerLabel}</Text>
                 </View>
             </View>
 

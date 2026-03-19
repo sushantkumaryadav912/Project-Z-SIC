@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
 import { Event } from '@/domains/events/types';
 import { Restaurant } from '@/domains/restaurants/types';
 import { Tiffin } from '@/domains/tiffins/types';
+import { useAppSelector } from '@/hooks/useAppStore';
 
 interface SearchResultsSectionProps {
     title: string;
@@ -18,6 +19,9 @@ export const SearchResultsSection: React.FC<SearchResultsSectionProps> = ({
     emptyMessage = 'No results found',
 }) => {
     if (!data || data.length === 0) return null;
+
+    const theme = useAppSelector((state) => state.ui.theme);
+    const isDark = theme === 'dark';
 
     const dedupedData = React.useMemo(() => {
         const seen = new Set<string>();
@@ -38,25 +42,25 @@ export const SearchResultsSection: React.FC<SearchResultsSectionProps> = ({
         return (
             <TouchableOpacity
                 data-testid={`search-result-${item._id}`}
-                className="bg-white rounded-3xl overflow-hidden mb-3 shadow-sm flex-row border border-gray-100"
-                style={{ shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, elevation: 1 }}
+                className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden mb-3 shadow-sm flex-row border border-gray-100 dark:border-slate-800"
+                style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, elevation: 1 }]}
                 onPress={() => onItemPress(item)}
             >
-                <View className="w-24 h-24 bg-gray-100">
+                <View className="w-24 h-24 bg-gray-100 dark:bg-slate-800">
                     {imageUrl ? (
                         <Image source={{ uri: imageUrl }} className="w-24 h-24" />
                     ) : (
                         <View className="flex-1 items-center justify-center">
-                            <Text className="text-xs text-gray-400">No image</Text>
+                            <Text className="text-xs text-gray-400 dark:text-slate-400">No image</Text>
                         </View>
                     )}
                 </View>
                 <View className="flex-1 p-3 justify-center">
-                    <Text className="text-base font-semibold text-gray-900" numberOfLines={1}>
+                    <Text className="text-base font-semibold text-gray-900 dark:text-slate-100" numberOfLines={1}>
                         {displayName}
                     </Text>
                     {description ? (
-                        <Text className="text-sm text-gray-600 mt-1" numberOfLines={2}>
+                        <Text className="text-sm text-gray-600 dark:text-slate-300 mt-1" numberOfLines={2}>
                             {description}
                         </Text>
                     ) : null}
@@ -67,7 +71,7 @@ export const SearchResultsSection: React.FC<SearchResultsSectionProps> = ({
 
     return (
         <View className="mb-6">
-            <Text className="text-base font-semibold text-gray-900 mb-3">{title}</Text>
+            <Text className="text-base font-semibold text-gray-900 dark:text-slate-100 mb-3">{title}</Text>
             <FlatList
                 data={dedupedData}
                 keyExtractor={(item, index) => (item._id || index).toString()}

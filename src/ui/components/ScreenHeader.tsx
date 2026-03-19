@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React from 'react';import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '@/app/navigation/types';
+import { useAppSelector } from '@/hooks/useAppStore';
 
 type ScreenHeaderProps = {
     title: string;
@@ -20,26 +20,28 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
     showSearch = true 
 }) => {
     const navigation = useNavigation<NavigationProp>();
+    const theme = useAppSelector((state) => state.ui.theme);
+    const isDark = theme === 'dark';
 
     return (
         <View className="px-5 pt-6 pb-3">
             <View className="flex-row items-center justify-between">
-                <Text className="text-2xl font-bold text-gray-900">{title}</Text>
+                <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50">{title}</Text>
                 <View className="flex-row items-center">
                     {showSearch && (
                         <TouchableOpacity
                             data-testid="search-icon-button"
                             onPress={() => navigation.navigate('Search')}
-                            className="bg-white rounded-full px-3 py-2 mr-2"
-                            style={{ shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 }}
+                            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-full px-3 py-2 mr-2"
+                            style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 }]}
                         >
-                            <Text className="text-xs font-semibold text-gray-700">Search</Text>
+                            <Text className="text-xs font-semibold text-gray-700 dark:text-gray-200">Search</Text>
                         </TouchableOpacity>
                     )}
                     {rightSlot}
                 </View>
             </View>
-            {subtitle ? <Text className="text-sm text-gray-600 mt-1">{subtitle}</Text> : null}
+            {subtitle ? <Text className="text-sm text-gray-600 dark:text-gray-300 mt-1">{subtitle}</Text> : null}
         </View>
     );
 };

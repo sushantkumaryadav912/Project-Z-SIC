@@ -82,7 +82,15 @@ export const TabsNavigator = () => {
                     tabBarStyle: {
                         backgroundColor: navTheme.colors.card,
                         borderTopColor: navTheme.colors.border,
+                        height: 70,
+                        paddingTop: 8,
+                        paddingBottom: 10,
                     },
+                    tabBarLabelStyle: {
+                        marginTop: 2,
+                    },
+                    tabBarActiveTintColor: navTheme.colors.primary,
+                    tabBarInactiveTintColor: navTheme.colors.text,
                 };
             }}
         >

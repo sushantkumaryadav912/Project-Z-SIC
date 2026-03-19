@@ -6,6 +6,7 @@ import { EventsStackParamList } from '@/app/navigation/types';
 import { useEventDetail } from '../hooks/useEvents';
 import { Event } from '@/domains/events/types';
 import { useFeatureFlags } from '@/hooks/useFeatureFlags';
+import { useAppSelector } from '@/hooks/useAppStore';
 import { openInMaps } from '@/services/maps/googleMaps';
 import { ErrorState } from '@/ui/components/ErrorState';
 import { ImageCarousel } from '@/ui/components/ImageCarousel';
@@ -17,6 +18,8 @@ export const EventDetailScreen: React.FC<Props> = ({ route }) => {
     const { id } = route.params;
     const { data: event, isLoading, isError, refetch } = useEventDetail(id);
     const { data: featureFlags } = useFeatureFlags();
+    const theme = useAppSelector((state) => state.ui.theme);
+    const isDark = theme === 'dark';
 
     const normalizedEvent = event as Event | undefined;
 
@@ -64,26 +67,29 @@ export const EventDetailScreen: React.FC<Props> = ({ route }) => {
     const ended = isPastEvent(normalizedEvent.date);
 
     return (
-        <ScrollView className="flex-1 bg-[#f6f7f8]">
+        <ScrollView className="flex-1 bg-[#f6f7f8] dark:bg-slate-950">
             <View className="px-5 py-6">
                 {images.length > 0 && <ImageCarousel images={images} />}
 
-                <View className="bg-white rounded-3xl p-5 shadow-sm mt-5" style={{ shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
-                    <Text className="text-2xl font-bold text-gray-900">{normalizedEvent.name || normalizedEvent.title || 'Unnamed Event'}</Text>
+                <View
+                    className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-3xl p-5 shadow-sm mt-5"
+                    style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }]}
+                >
+                    <Text className="text-2xl font-bold text-gray-900 dark:text-slate-100">{normalizedEvent.name || normalizedEvent.title || 'Unnamed Event'}</Text>
                     {ended && (
-                        <View className="mt-2 bg-red-50 px-2 py-1 rounded-full self-start">
-                            <Text className="text-xs font-semibold text-red-700">Event Ended</Text>
+                        <View className="mt-2 bg-red-50 dark:bg-red-950 px-2 py-1 rounded-full self-start">
+                            <Text className="text-xs font-semibold text-red-700 dark:text-red-200">Event Ended</Text>
                         </View>
                     )}
                     {normalizedEvent.category && (
                         <Text className="text-xs font-semibold text-[#02757A] mt-2">{normalizedEvent.category}</Text>
                     )}
-                    <View className="mt-4 bg-gray-50 rounded-2xl px-3 py-2">
+                    <View className="mt-4 bg-gray-50 dark:bg-slate-950 rounded-2xl px-3 py-2">
                         {normalizedEvent.date && (
-                            <Text className="text-sm text-gray-600">{new Date(normalizedEvent.date).toLocaleString()}</Text>
+                            <Text className="text-sm text-gray-600 dark:text-slate-300">{new Date(normalizedEvent.date).toLocaleString()}</Text>
                         )}
                         {normalizedEvent.venue && (
-                            <Text className="text-sm text-gray-600 mt-1">Venue: {formatVenue(normalizedEvent.venue)}</Text>
+                            <Text className="text-sm text-gray-600 dark:text-slate-300 mt-1">Venue: {formatVenue(normalizedEvent.venue)}</Text>
                         )}
                     </View>
 
@@ -92,12 +98,12 @@ export const EventDetailScreen: React.FC<Props> = ({ route }) => {
                     )}
 
                     {normalizedEvent.description && (
-                        <Text className="text-base text-gray-700 mt-4 leading-6">{normalizedEvent.description}</Text>
+                        <Text className="text-base text-gray-700 dark:text-slate-200 mt-4 leading-6">{normalizedEvent.description}</Text>
                     )}
 
                     {!featureFlags?.enableBooking && (
-                        <View className="mt-4 bg-amber-50 px-3 py-2 rounded-2xl self-start">
-                            <Text className="text-xs font-semibold text-amber-700">Booking Coming Soon</Text>
+                        <View className="mt-4 bg-amber-50 dark:bg-amber-950 px-3 py-2 rounded-2xl self-start">
+                            <Text className="text-xs font-semibold text-amber-700 dark:text-amber-200">Booking Coming Soon</Text>
                         </View>
                     )}
                 </View>

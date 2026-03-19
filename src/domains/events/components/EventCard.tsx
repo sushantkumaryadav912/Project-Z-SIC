@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { Event } from '@/domains/events/types';
+import { useAppSelector } from '@/hooks/useAppStore';
 
 interface EventCardProps {
     item: Event;
@@ -8,6 +9,9 @@ interface EventCardProps {
 }
 
 export const EventCard = memo<EventCardProps>(({ item, onPress }) => {
+    const theme = useAppSelector((state) => state.ui.theme);
+    const isDark = theme === 'dark';
+
     const formatVenue = (venue?: Event['venue']) => {
         if (!venue) return '';
         if (typeof venue === 'string') return venue;
@@ -33,16 +37,16 @@ export const EventCard = memo<EventCardProps>(({ item, onPress }) => {
     return (
         <TouchableOpacity
             data-testid={`event-card-${item._id}`}
-            className="bg-white rounded-3xl overflow-hidden mb-4 shadow-sm"
-            style={{ shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 10, elevation: 2 }}
+            className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden mb-4 shadow-sm"
+            style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 10, elevation: 2 }]}
             onPress={() => onPress(item._id || 'unknown')}
         >
-            <View className="h-40 bg-gray-100">
+            <View className="h-40 bg-gray-100 dark:bg-gray-800">
                 {imageUrl ? (
                     <Image source={{ uri: imageUrl }} className="h-40 w-full" />
                 ) : (
                     <View className="flex-1 items-center justify-center">
-                        <Text className="text-xs text-gray-500">No image</Text>
+                        <Text className="text-xs text-gray-500 dark:text-gray-400">No image</Text>
                     </View>
                 )}
                 {ended && (
@@ -52,14 +56,14 @@ export const EventCard = memo<EventCardProps>(({ item, onPress }) => {
                 )}
             </View>
             <View className="p-4">
-                <Text className="text-base font-bold text-gray-900" numberOfLines={1}>
+                <Text className="text-base font-bold text-gray-900 dark:text-gray-50" numberOfLines={1}>
                     {item.name || item.title || 'Unnamed Event'}
                 </Text>
                 {item.date && (
-                    <Text className="text-sm text-gray-600 mt-1">{new Date(item.date).toLocaleDateString()}</Text>
+                    <Text className="text-sm text-gray-600 dark:text-gray-300 mt-1">{new Date(item.date).toLocaleDateString()}</Text>
                 )}
                 {item.venue && (
-                    <Text className="text-xs text-gray-500 mt-1" numberOfLines={1}>Venue: {formatVenue(item.venue)}</Text>
+                    <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1" numberOfLines={1}>Venue: {formatVenue(item.venue)}</Text>
                 )}
                 {item.category && (
                     <Text className="text-xs font-semibold text-[#02757A] mt-2">{item.category}</Text>
