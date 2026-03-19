@@ -28,6 +28,9 @@
   "exclude": [
     "node_modules",
     "dist",
-    ".expo"
+    ".expo",
+    "src/modules",
+    "src/core",
+    "src/shared"
   ]
 }

@@ -11,11 +11,17 @@
   "search.exclude": {
     "**/node_modules": true,
     "**/dist": true,
-    "**/.expo": true
+    "**/.expo": true,
+    "**/src/modules": true,
+    "**/src/core": true,
+    "**/src/shared": true
   },
   "files.watcherExclude": {
     "**/node_modules/**": true,
     "**/dist/**": true,
-    "**/.expo/**": true
+    "**/.expo/**": true,
+    "**/src/modules/**": true,
+    "**/src/core/**": true,
+    "**/src/shared/**": true
   }
 }
