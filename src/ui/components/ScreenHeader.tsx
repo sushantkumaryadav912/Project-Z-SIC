@@ -4,12 +4,15 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '@/app/navigation/types';
 import { useTheme } from '@/ui/context/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
 
 type ScreenHeaderProps = {
     title: string;
     subtitle?: string;
     rightSlot?: React.ReactNode;
     showSearch?: boolean;
+    onBack?: () => void;
+    backIcon?: keyof typeof Ionicons.glyphMap;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -18,14 +21,24 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
     title, 
     subtitle, 
     rightSlot, 
-    showSearch = true 
+    showSearch = true,
+    onBack,
+    backIcon = 'chevron-back'
 }) => {
     const navigation = useNavigation<NavigationProp>();
     const theme = useTheme();
 
     return (
         <View style={{ paddingTop: 8, paddingBottom: 4 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {onBack && (
+                    <TouchableOpacity 
+                        onPress={onBack}
+                        style={{ marginRight: 12, padding: 4 }}
+                    >
+                        <Ionicons name={backIcon} size={28} color={theme.text} />
+                    </TouchableOpacity>
+                )}
                 <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 28, fontWeight: '900', color: theme.text, letterSpacing: -0.5 }}>{title}</Text>
                     {subtitle ? (
@@ -47,4 +60,4 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
             </View>
         </View>
     );
-};
+};

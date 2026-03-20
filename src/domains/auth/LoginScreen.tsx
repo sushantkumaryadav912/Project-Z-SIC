@@ -6,6 +6,7 @@ import { RootStackParamList } from '@/app/navigation/types';
 import { apiClient } from '@/platform/api/client';
 import { ErrorState } from '@/ui/components/ErrorState';
 import { useAppSelector } from '@/hooks/useAppStore';
+import { useUser } from '@/ui/context/UserContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -15,6 +16,7 @@ type LoginForm = {
 };
 
 export const LoginScreen: React.FC<Props> = ({ navigation }) => {
+    const { login } = useUser();
     const theme = useAppSelector((state) => state.ui.theme);
     const isDark = theme === 'dark';
     const placeholderTextColor = isDark ? '#94A3B8' : '#6B7280';
@@ -75,6 +77,12 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
             });
 
             if (response.data?.success || response.data?.message === 'Login successful!') {
+                const userData = response.data.user || {
+                    name: form.email.split('@')[0],
+                    email: form.email,
+                    phone: '',
+                };
+                await login(userData);
                 navigation.replace('MainTabs');
                 return;
             }

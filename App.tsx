@@ -11,6 +11,8 @@ import { OfflineBanner } from '@/ui/components/OfflineBanner';
 import { useAppSelector } from '@/hooks/useAppStore';
 import './global.css';
 
+import { UserProvider } from '@/ui/context/UserContext';
+
 const AppShell = () => {
   const theme = useAppSelector((state) => state.ui.theme);
   const { setColorScheme } = useColorScheme();
@@ -35,7 +37,9 @@ const AppShell = () => {
 export default function App() {
   return (
     <Provider store={store}>
-      <AppShell />
+      <UserProvider>
+        <AppShell />
+      </UserProvider>
     </Provider>
   );
 }
