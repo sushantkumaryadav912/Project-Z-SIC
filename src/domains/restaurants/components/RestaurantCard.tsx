@@ -9,8 +9,7 @@ interface RestaurantCardProps {
 }
 
 export const RestaurantCard = memo<RestaurantCardProps>(({ item, onPress }) => {
-    const theme = useAppSelector((state) => state.ui.theme);
-    const isDark = theme === 'dark';
+    const theme = useTheme();
 
     const getCuisineTags = (item: Restaurant) => {
         if (Array.isArray(item.cuisineTags)) return item.cuisineTags;
@@ -40,7 +39,6 @@ export const RestaurantCard = memo<RestaurantCardProps>(({ item, onPress }) => {
     const priceValue = getPriceValue(item);
     const imageUrl = item.imageUrl || item.images?.[0];
     const isVeg = isVegRestaurant(item);
-    const theme = useTheme();
 
     return (
         <TouchableOpacity

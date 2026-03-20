@@ -18,7 +18,7 @@ type Props = NativeStackScreenProps<TiffinStackParamList, 'TiffinList'>;
 type SortOption = 'default' | 'price-low' | 'price-high' | 'veg-first';
 
 export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
-    const { isDark, colors } = useTheme();
+    const theme = useTheme();
 
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -26,7 +26,6 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
     const [priceFilter, setPriceFilter] = useState<'budget' | 'mid' | 'premium' | null>(null);
     const [sortBy, setSortBy] = useState<SortOption>('default');
     const [showSortMenu, setShowSortMenu] = useState(false);
-    const theme = useTheme();
 
     const {
         data,
@@ -169,8 +168,8 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
     const renderFooter = () => {
         if (!isFetchingNextPage) return null;
         return (
-            <View className="py-4">
-                <ActivityIndicator size="small" color={colors.primary} />
+            <View style={{ paddingVertical: 16 }}>
+                <ActivityIndicator size="small" color="#02757A" />
             </View>
         );
     };

@@ -8,7 +8,6 @@ import { useTheme } from '@/ui/context/ThemeContext';
 export const SettingsScreen: React.FC = () => {
     const theme = useTheme();
     const { data: featureFlags } = useFeatureFlags();
-    const { mode, isDark, colors } = useTheme();
 
     const appVersion = appConfig?.expo?.version || '1.0.0';
     const flagEntries = useMemo(() => Object.entries(featureFlags || {}), [featureFlags]);

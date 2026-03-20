@@ -19,10 +19,6 @@ export const SearchResultsSection: React.FC<SearchResultsSectionProps> = ({
     emptyMessage = 'No results found',
 }) => {
     const theme = useTheme();
-    if (!data || data.length === 0) return null;
-
-    const theme = useAppSelector((state) => state.ui.theme);
-    const isDark = theme === 'dark';
 
     const dedupedData = React.useMemo(() => {
         const seen = new Set<string>();
@@ -34,6 +30,8 @@ export const SearchResultsSection: React.FC<SearchResultsSectionProps> = ({
             return true;
         });
     }, [data]);
+
+    if (!data || data.length === 0) return null;
 
     const renderItem = ({ item }: { item: any }) => {
         const imageUrl = item.imageUrl || item.images?.[0];

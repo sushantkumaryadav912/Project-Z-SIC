@@ -18,7 +18,7 @@ type Props = NativeStackScreenProps<EventsStackParamList, 'EventList'>;
 type SortOption = 'default' | 'date-asc' | 'date-desc' | 'price-low' | 'price-high';
 
 export const EventListScreen: React.FC<Props> = ({ navigation }) => {
-    const { isDark, colors } = useTheme();
+    const theme = useTheme();
 
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -26,7 +26,6 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
     const [dateFilter, setDateFilter] = useState<'upcoming' | 'week' | 'past' | null>(null);
     const [sortBy, setSortBy] = useState<SortOption>('default');
     const [showSortMenu, setShowSortMenu] = useState(false);
-    const theme = useTheme();
 
     const {
         data,
@@ -197,8 +196,8 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
     const renderFooter = () => {
         if (!isFetchingNextPage) return null;
         return (
-            <View className="py-4">
-                <ActivityIndicator size="small" color={colors.primary} />
+            <View style={{ paddingVertical: 16 }}>
+                <ActivityIndicator size="small" color="#02757A" />
             </View>
         );
     };

@@ -18,8 +18,7 @@ export const RestaurantDetailScreen: React.FC<Props> = ({ route }) => {
     const { id } = route.params;
     const { data: restaurant, isLoading, isError, refetch } = useRestaurantDetail(id);
     const { data: featureFlags } = useFeatureFlags();
-    const { isDark, colors } = useTheme();
-
+    const theme = useTheme();
     const normalizedRestaurant = restaurant as RestaurantDetail | undefined;
 
     const images = useMemo(() => {
@@ -101,8 +100,6 @@ export const RestaurantDetailScreen: React.FC<Props> = ({ route }) => {
         }
         return [];
     }, [normalizedRestaurant]);
-
-    const theme = useTheme();
 
     if (isLoading) {
         return <LoadingSkeletonList count={2} />;

@@ -18,7 +18,7 @@ type Props = NativeStackScreenProps<RestaurantsStackParamList, 'RestaurantList'>
 type SortOption = 'default' | 'price-low' | 'price-high' | 'rating' | 'distance';
 
 export const RestaurantListScreen: React.FC<Props> = ({ navigation }) => {
-    const { isDark, colors } = useTheme();
+    const theme = useTheme();
 
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -27,7 +27,6 @@ export const RestaurantListScreen: React.FC<Props> = ({ navigation }) => {
     const [priceFilter, setPriceFilter] = useState<'budget' | 'mid' | 'premium' | null>(null);
     const [sortBy, setSortBy] = useState<SortOption>('default');
     const [showSortMenu, setShowSortMenu] = useState(false);
-    const theme = useTheme();
 
     const {
         data,
@@ -191,8 +190,8 @@ export const RestaurantListScreen: React.FC<Props> = ({ navigation }) => {
     const renderFooter = () => {
         if (!isFetchingNextPage) return null;
         return (
-            <View className="py-4">
-                <ActivityIndicator size="small" color={colors.primary} />
+            <View style={{ paddingVertical: 16 }}>
+                <ActivityIndicator size="small" color="#02757A" />
             </View>
         );
     };
