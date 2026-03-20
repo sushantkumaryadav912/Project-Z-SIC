@@ -50,7 +50,7 @@ export const EventCard = memo<EventCardProps>(({ item, onPress }) => {
             }}
             onPress={() => onPress(item._id || 'unknown')}
         >
-            <View style={{ height: 180, backgroundColor: theme.dark ? '#1a1535' : '#ede9fe' }}>
+            <View style={{ height: 180, backgroundColor: '#ede9fe' }}>
                 {imageUrl ? (
                     <ImageBackground source={{ uri: imageUrl }} style={{ flex: 1 }} resizeMode="cover">
                         <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 80, backgroundColor: 'rgba(0,0,0,0.38)' }} />

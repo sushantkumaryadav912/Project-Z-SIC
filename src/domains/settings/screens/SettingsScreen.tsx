@@ -1,16 +1,12 @@
 import React, { useMemo } from 'react';
-import { View, Text, Switch } from 'react-native';
+import { View, Text } from 'react-native';
 import appConfig from '../../../../app.json';
 import { useFeatureFlags } from '@/hooks/useFeatureFlags';
-import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
-import { setTheme } from '@/store/slices/uiSlice';
 import { ScreenHeader } from '@/ui/components/ScreenHeader';
 import { useTheme } from '@/ui/context/ThemeContext';
 
 export const SettingsScreen: React.FC = () => {
-    const dispatch = useAppDispatch();
     const theme = useTheme();
-    const themeMode = useAppSelector((state) => state.ui.theme);
     const { data: featureFlags } = useFeatureFlags();
 
     const appVersion = appConfig?.expo?.version || '1.0.0';
@@ -25,22 +21,6 @@ export const SettingsScreen: React.FC = () => {
             </View>
 
             <View style={{ paddingHorizontal: 20, marginTop: -16, zIndex: 1 }}>
-                <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
-                    <Text style={{ fontSize: 15, fontWeight: '700', color: theme.text }}>Appearance</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 14 }}>
-                        <Text style={{ fontSize: 14, color: theme.subtext }}>Theme</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ fontSize: 12, color: theme.subtext, marginRight: 8 }}>{themeMode === 'dark' ? 'Dark' : 'Light'}</Text>
-                            <Switch
-                                value={themeMode === 'dark'}
-                                onValueChange={(value) => dispatch(setTheme(value ? 'dark' : 'light'))}
-                                trackColor={{ false: '#d1d5db', true: '#02757A' }}
-                                thumbColor={themeMode === 'dark' ? '#fff' : '#f3f4f6'}
-                            />
-                        </View>
-                    </View>
-                </View>
-
                 <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
                     <Text style={{ fontSize: 15, fontWeight: '700', color: theme.text }}>Feature flags</Text>
                     {flagEntries.length > 0 ? (

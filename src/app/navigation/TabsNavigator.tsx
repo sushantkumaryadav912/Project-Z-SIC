@@ -9,7 +9,6 @@ import { SettingsScreen } from '@/domains/settings/screens/SettingsScreen';
 import { TiffinDetailScreen } from '@/domains/tiffins/screens/TiffinDetailScreen';
 import { TiffinListScreen } from '@/domains/tiffins/screens/TiffinListScreen';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@/ui/context/ThemeContext';
 import type {
     EventsStackParamList,
     MainTabsParamList,
@@ -52,22 +51,20 @@ const SettingsStackNavigator = () => (
 );
 
 export const TabsNavigator = () => {
-    const theme = useTheme();
-
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 headerShown: false,
                 tabBarStyle: {
-                    backgroundColor: theme.card,
-                    borderTopColor: theme.border,
+                    backgroundColor: '#ffffff',
+                    borderTopColor: '#f3f4f6',
                     borderTopWidth: 1,
                     height: 90,
                     paddingBottom: 30,
                     paddingTop: 8,
                 },
                 tabBarActiveTintColor: '#02757A',
-                tabBarInactiveTintColor: theme.subtext,
+                tabBarInactiveTintColor: '#6b7280',
                 tabBarLabelStyle: {
                     fontSize: 11,
                     fontWeight: '600',

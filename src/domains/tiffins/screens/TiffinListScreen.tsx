@@ -221,7 +221,7 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
                         <TouchableOpacity
                             key={option.value}
                             data-testid={`sort-option-${option.value}`}
-                            style={{ paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: theme.border, backgroundColor: sortBy === option.value ? (theme.dark ? '#1e1510' : '#f5efe8') : 'transparent' }}
+                            style={{ paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: theme.border, backgroundColor: sortBy === option.value ? '#f5efe8' : 'transparent' }}
                             onPress={() => { setSortBy(option.value as SortOption); setShowSortMenu(false); }}
                         >
                             <Text style={{ fontSize: 14, fontWeight: '600', color: sortBy === option.value ? '#02757A' : theme.text }}>

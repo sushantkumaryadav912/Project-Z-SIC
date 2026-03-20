@@ -244,7 +244,7 @@ export const RestaurantListScreen: React.FC<Props> = ({ navigation }) => {
                         <TouchableOpacity
                             key={option.value}
                             data-testid={`sort-option-${option.value}`}
-                            style={{ paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: theme.border, backgroundColor: sortBy === option.value ? (theme.dark ? '#1a3a3a' : '#e6f4f4') : 'transparent' }}
+                            style={{ paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: theme.border, backgroundColor: sortBy === option.value ? '#e6f4f4' : 'transparent' }}
                             onPress={() => { setSortBy(option.value as SortOption); setShowSortMenu(false); }}
                         >
                             <Text style={{ fontSize: 14, fontWeight: '600', color: sortBy === option.value ? '#02757A' : theme.text }}>

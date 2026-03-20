@@ -129,7 +129,7 @@ export const RestaurantDetailScreen: React.FC<Props> = ({ route }) => {
                         <Text style={{ fontSize: 14, color: theme.subtext, marginTop: 12, lineHeight: 22 }}>{normalizedRestaurant.description}</Text>
                     )}
                     {!featureFlags?.enableOrdering && (
-                        <View style={{ marginTop: 14, backgroundColor: theme.dark ? '#2a1f00' : '#fffbeb', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, alignSelf: 'flex-start', borderWidth: 1, borderColor: theme.dark ? '#5a3e00' : '#fde68a' }}>
+                        <View style={{ marginTop: 14, backgroundColor: '#fffbeb', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, alignSelf: 'flex-start', borderWidth: 1, borderColor: '#fde68a' }}>
                             <Text style={{ fontSize: 12, fontWeight: '700', color: '#b45309' }}>⏳ Ordering Coming Soon</Text>
                         </View>
                     )}
