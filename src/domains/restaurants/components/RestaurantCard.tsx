@@ -9,6 +9,9 @@ interface RestaurantCardProps {
 }
 
 export const RestaurantCard = memo<RestaurantCardProps>(({ item, onPress }) => {
+    const theme = useAppSelector((state) => state.ui.theme);
+    const isDark = theme === 'dark';
+
     const getCuisineTags = (item: Restaurant) => {
         if (Array.isArray(item.cuisineTags)) return item.cuisineTags;
         if (Array.isArray(item.cuisines)) return item.cuisines;

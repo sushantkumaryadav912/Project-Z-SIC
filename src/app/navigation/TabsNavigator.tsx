@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { EventDetailScreen } from '@/domains/events/screens/EventDetailScreen';
 import { EventListScreen } from '@/domains/events/screens/EventListScreen';
 import { RestaurantDetailScreen } from '@/domains/restaurants/screens/RestaurantDetailScreen';
@@ -51,6 +52,14 @@ const SettingsStackNavigator = () => (
 );
 
 export const TabsNavigator = () => {
+    const { isDark, colors } = useTheme();
+
+    // Keep tab highlight consistent with in-screen primary actions (e.g. selected filter chip)
+    const activeColor = colors.primary;
+    const inactiveColor = isDark ? '#AAA' : '#888';
+    const tabBackground = isDark ? '#121212' : '#FFFFFF';
+    const tabBorder = isDark ? '#222' : '#E5E5E5';
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
