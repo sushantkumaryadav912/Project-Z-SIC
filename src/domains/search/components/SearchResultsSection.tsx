@@ -21,9 +21,6 @@ export const SearchResultsSection: React.FC<SearchResultsSectionProps> = ({
     const theme = useTheme();
     if (!data || data.length === 0) return null;
 
-    const theme = useAppSelector((state) => state.ui.theme);
-    const isDark = theme === 'dark';
-
     const dedupedData = React.useMemo(() => {
         const seen = new Set<string>();
         return data.filter((item: any) => {
