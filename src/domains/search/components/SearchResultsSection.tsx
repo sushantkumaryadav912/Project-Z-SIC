@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
 import { Event } from '@/domains/events/types';
 import { Restaurant } from '@/domains/restaurants/types';
 import { Tiffin } from '@/domains/tiffins/types';
-import { useAppSelector } from '@/hooks/useAppStore';
+import { useTheme } from '@/ui/context/ThemeContext';
 
 interface SearchResultsSectionProps {
     title: string;
@@ -18,6 +18,7 @@ export const SearchResultsSection: React.FC<SearchResultsSectionProps> = ({
     onItemPress,
     emptyMessage = 'No results found',
 }) => {
+    const theme = useTheme();
     if (!data || data.length === 0) return null;
 
     const theme = useAppSelector((state) => state.ui.theme);
@@ -42,25 +43,24 @@ export const SearchResultsSection: React.FC<SearchResultsSectionProps> = ({
         return (
             <TouchableOpacity
                 data-testid={`search-result-${item._id}`}
-                className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden mb-3 shadow-sm flex-row border border-gray-100 dark:border-slate-800"
-                style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, elevation: 1 }]}
+                style={{ backgroundColor: theme.card, borderRadius: 24, overflow: 'hidden', marginBottom: 12, flexDirection: 'row', borderWidth: 1, borderColor: theme.border, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, elevation: 1 }}
                 onPress={() => onItemPress(item)}
             >
-                <View className="w-24 h-24 bg-gray-100 dark:bg-slate-800">
+                <View style={{ width: 96, height: 96, backgroundColor: theme.border }}>
                     {imageUrl ? (
-                        <Image source={{ uri: imageUrl }} className="w-24 h-24" />
+                        <Image source={{ uri: imageUrl }} style={{ width: 96, height: 96 }} />
                     ) : (
-                        <View className="flex-1 items-center justify-center">
-                            <Text className="text-xs text-gray-400 dark:text-slate-400">No image</Text>
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                            <Text style={{ fontSize: 12, color: theme.subtext }}>No image</Text>
                         </View>
                     )}
                 </View>
-                <View className="flex-1 p-3 justify-center">
-                    <Text className="text-base font-semibold text-gray-900 dark:text-slate-100" numberOfLines={1}>
+                <View style={{ flex: 1, padding: 12, justifyContent: 'center' }}>
+                    <Text style={{ fontSize: 16, fontWeight: '600', color: theme.text }} numberOfLines={1}>
                         {displayName}
                     </Text>
                     {description ? (
-                        <Text className="text-sm text-gray-600 dark:text-slate-300 mt-1" numberOfLines={2}>
+                        <Text style={{ fontSize: 14, color: theme.subtext, marginTop: 4 }} numberOfLines={2}>
                             {description}
                         </Text>
                     ) : null}
@@ -70,8 +70,8 @@ export const SearchResultsSection: React.FC<SearchResultsSectionProps> = ({
     };
 
     return (
-        <View className="mb-6">
-            <Text className="text-base font-semibold text-gray-900 dark:text-slate-100 mb-3">{title}</Text>
+        <View style={{ marginBottom: 24 }}>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: theme.text, marginBottom: 12 }}>{title}</Text>
             <FlatList
                 data={dedupedData}
                 keyExtractor={(item, index) => (item._id || index).toString()}

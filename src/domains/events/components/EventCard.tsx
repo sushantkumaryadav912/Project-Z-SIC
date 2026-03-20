@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import { Event } from '@/domains/events/types';
-import { useAppSelector } from '@/hooks/useAppStore';
+import { useTheme } from '@/ui/context/ThemeContext';
 
 interface EventCardProps {
     item: Event;
@@ -9,8 +9,7 @@ interface EventCardProps {
 }
 
 export const EventCard = memo<EventCardProps>(({ item, onPress }) => {
-    const theme = useAppSelector((state) => state.ui.theme);
-    const isDark = theme === 'dark';
+    const theme = useTheme();
 
     const formatVenue = (venue?: Event['venue']) => {
         if (!venue) return '';
@@ -37,42 +36,61 @@ export const EventCard = memo<EventCardProps>(({ item, onPress }) => {
     return (
         <TouchableOpacity
             data-testid={`event-card-${item._id}`}
-            className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden mb-4 shadow-sm"
-            style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 10, elevation: 2 }]}
+            activeOpacity={0.92}
+            style={{
+                backgroundColor: theme.card,
+                borderRadius: 24,
+                overflow: 'hidden',
+                marginBottom: 18,
+                shadowColor: '#6d28d9',
+                shadowOpacity: 0.10,
+                shadowRadius: 16,
+                shadowOffset: { width: 0, height: 4 },
+                elevation: 4,
+            }}
             onPress={() => onPress(item._id || 'unknown')}
         >
-            <View className="h-40 bg-gray-100 dark:bg-gray-800">
+            <View style={{ height: 180, backgroundColor: '#ede9fe' }}>
                 {imageUrl ? (
-                    <Image source={{ uri: imageUrl }} className="h-40 w-full" />
+                    <ImageBackground source={{ uri: imageUrl }} style={{ flex: 1 }} resizeMode="cover">
+                        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 80, backgroundColor: 'rgba(0,0,0,0.38)' }} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 12 }}>
+                            {item.category && (
+                                <View style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
+                                    <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700' }}>{item.category}</Text>
+                                </View>
+                            )}
+                            {ended && (
+                                <View style={{ marginLeft: 'auto', backgroundColor: '#dc2626', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
+                                    <Text style={{ color: '#fff', fontSize: 10, fontWeight: '700' }}>ENDED</Text>
+                                </View>
+                            )}
+                        </View>
+                    </ImageBackground>
                 ) : (
-                    <View className="flex-1 items-center justify-center">
-                        <Text className="text-xs text-gray-500 dark:text-gray-400">No image</Text>
-                    </View>
-                )}
-                {ended && (
-                    <View className="absolute top-3 right-3 bg-red-600 px-2 py-1 rounded-full">
-                        <Text className="text-xs font-semibold text-white">Event Ended</Text>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 40 }}>🎪</Text>
+                        <Text style={{ fontSize: 12, color: theme.subtext, marginTop: 6 }}>No image available</Text>
                     </View>
                 )}
             </View>
-            <View className="p-4">
-                <Text className="text-base font-bold text-gray-900 dark:text-gray-50" numberOfLines={1}>
+
+            <View style={{ padding: 16, backgroundColor: theme.card }}>
+                <Text style={{ fontSize: 17, fontWeight: '800', color: theme.text }} numberOfLines={1}>
                     {item.name || item.title || 'Unnamed Event'}
                 </Text>
                 {item.date && (
-                    <Text className="text-sm text-gray-600 dark:text-gray-300 mt-1">{new Date(item.date).toLocaleDateString()}</Text>
+                    <Text style={{ fontSize: 13, color: theme.subtext, marginTop: 6 }}>{new Date(item.date).toLocaleDateString()}</Text>
                 )}
                 {item.venue && (
-                    <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1" numberOfLines={1}>Venue: {formatVenue(item.venue)}</Text>
+                    <Text style={{ fontSize: 12, color: theme.subtext, marginTop: 4 }} numberOfLines={1}>Venue: {formatVenue(item.venue)}</Text>
                 )}
                 {item.category && (
-                    <Text className="text-xs font-semibold text-[#02757A] mt-2">{item.category}</Text>
+                    <Text style={{ fontSize: 12, fontWeight: '700', color: '#02757A', marginTop: 6 }}>{item.category}</Text>
                 )}
             </View>
         </TouchableOpacity>
     );
-}, (prevProps, nextProps) => {
-    return prevProps.item._id === nextProps.item._id;
-});
+}, () => false);
 
 EventCard.displayName = 'EventCard';

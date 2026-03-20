@@ -10,7 +10,7 @@ import { openInMaps } from '@/services/maps/googleMaps';
 import { ErrorState } from '@/ui/components/ErrorState';
 import { ImageCarousel } from '@/ui/components/ImageCarousel';
 import { LoadingSkeletonList } from '@/ui/components/LoadingSkeletonList';
-import { useTheme } from '@/ui/theme';
+import { useTheme } from '@/ui/context/ThemeContext';
 
 type Props = NativeStackScreenProps<RestaurantsStackParamList, 'RestaurantDetail'>;
 
@@ -102,6 +102,8 @@ export const RestaurantDetailScreen: React.FC<Props> = ({ route }) => {
         return [];
     }, [normalizedRestaurant]);
 
+    const theme = useTheme();
+
     if (isLoading) {
         return <LoadingSkeletonList count={2} />;
     }
@@ -111,86 +113,80 @@ export const RestaurantDetailScreen: React.FC<Props> = ({ route }) => {
     }
 
     return (
-        <ScrollView className="flex-1" style={{ backgroundColor: colors.background }}>
-            <View className="px-4 py-6">
+        <ScrollView style={{ flex: 1, backgroundColor: theme.bg }}>
+            <View style={{ paddingHorizontal: 20, paddingVertical: 24 }}>
                 {images.length > 0 && <ImageCarousel images={images} />}
 
-                <View
-                    className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-5 shadow-sm mt-5"
-                    style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }]}
-                >
-                    <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50">{normalizedRestaurant.name || 'Unnamed Restaurant'}</Text>
+                {/* Hero card */}
+                <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginTop: 20, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
+                    <Text style={{ fontSize: 22, fontWeight: '800', color: theme.text }}>{normalizedRestaurant.name || 'Unnamed Restaurant'}</Text>
                     {cuisineTags.length > 0 && (
-                        <Text className="text-sm text-gray-600 dark:text-gray-300 mt-2">{cuisineTags.join(' • ')}</Text>
+                        <Text style={{ fontSize: 13, color: theme.subtext, marginTop: 6 }}>{cuisineTags.join(' • ')}</Text>
                     )}
                     {normalizedRestaurant.priceRange && (
-                        <Text className="text-sm font-semibold text-[#02757A] mt-2">{normalizedRestaurant.priceRange}</Text>
+                        <Text style={{ fontSize: 13, fontWeight: '700', color: '#02757A', marginTop: 6 }}>{normalizedRestaurant.priceRange}</Text>
                     )}
-
                     {normalizedRestaurant.description && (
-                        <Text className="text-base text-gray-700 dark:text-gray-200 mt-4 leading-6">{normalizedRestaurant.description}</Text>
+                        <Text style={{ fontSize: 14, color: theme.subtext, marginTop: 12, lineHeight: 22 }}>{normalizedRestaurant.description}</Text>
                     )}
-
                     {!featureFlags?.enableOrdering && (
-                        <View className="mt-4 bg-amber-50 dark:bg-amber-950 px-3 py-2 rounded-2xl self-start">
-                            <Text className="text-xs font-semibold text-amber-700 dark:text-amber-200">Ordering Coming Soon</Text>
+                        <View style={{ marginTop: 14, backgroundColor: '#fffbeb', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, alignSelf: 'flex-start', borderWidth: 1, borderColor: '#fde68a' }}>
+                            <Text style={{ fontSize: 12, fontWeight: '700', color: '#b45309' }}>⏳ Ordering Coming Soon</Text>
                         </View>
                     )}
                 </View>
 
-                <View
-                    className="mt-6 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-5 shadow-sm"
-                    style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 1 }]}
-                >
-                    <Text className="text-base font-semibold text-gray-900 dark:text-gray-50 mb-2">Services</Text>
-                    <View className="flex-row flex-wrap">
-                        {services.map((service) => (
-                            <View key={service} className="bg-cyan-50 dark:bg-cyan-950 px-3 py-1.5 rounded-full mr-2 mb-2">
-                                <Text className="text-xs font-semibold text-cyan-700 dark:text-cyan-200">{service}</Text>
-                            </View>
-                        ))}
+                {/* Services */}
+                {services.length > 0 && (
+                    <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginTop: 16, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 1 }}>
+                        <Text style={{ fontSize: 14, fontWeight: '700', color: theme.text, marginBottom: 12 }}>Services</Text>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                            {services.map((service) => (
+                                <View key={service} style={{ backgroundColor: theme.chipBg, borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, borderWidth: 1, borderColor: theme.chipBorder }}>
+                                    <Text style={{ fontSize: 12, fontWeight: '600', color: theme.chipText }}>{service}</Text>
+                                </View>
+                            ))}
+                        </View>
                     </View>
-                </View>
+                )}
 
+                {/* Hours */}
                 {hours.length > 0 && (
-                    <View
-                        className="mt-6 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-5 shadow-sm"
-                        style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 1 }]}
-                    >
-                        <Text className="text-base font-semibold text-gray-900 dark:text-gray-50 mb-2">Hours</Text>
+                    <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginTop: 16, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 1 }}>
+                        <Text style={{ fontSize: 14, fontWeight: '700', color: theme.text, marginBottom: 12 }}>Hours</Text>
                         {hours.map((line) => (
-                            <Text key={line} className="text-sm text-gray-600 dark:text-gray-300 mb-1">{line}</Text>
+                            <Text key={line} style={{ fontSize: 13, color: theme.subtext, marginBottom: 4 }}>{line}</Text>
                         ))}
                     </View>
                 )}
 
+                {/* Location */}
                 {(normalizedRestaurant.address || normalizedRestaurant.location?.address) && (
-                    <View
-                        className="mt-6 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-5 shadow-sm"
-                        style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 1 }]}
-                    >
-                        <Text className="text-base font-semibold text-gray-900 dark:text-gray-50 mb-2">Location</Text>
-                        <Text className="text-sm text-gray-600 dark:text-gray-300">{normalizedRestaurant.address || normalizedRestaurant.location?.address}</Text>
+                    <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginTop: 16, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 1 }}>
+                        <Text style={{ fontSize: 14, fontWeight: '700', color: theme.text, marginBottom: 8 }}>Location</Text>
+                        <Text style={{ fontSize: 13, color: theme.subtext, lineHeight: 20 }}>{normalizedRestaurant.address || normalizedRestaurant.location?.address}</Text>
                     </View>
                 )}
 
+                {/* Menu */}
                 {menuSections.length > 0 && (
-                    <View
-                        className="mt-6 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-5 shadow-sm"
-                        style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 1 }]}
-                    >
-                        <Text className="text-base font-semibold text-gray-900 dark:text-gray-50 mb-3">Menu</Text>
+                    <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginTop: 16, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 1 }}>
+                        <Text style={{ fontSize: 14, fontWeight: '700', color: theme.text, marginBottom: 14 }}>Menu</Text>
                         {menuSections.map((section) => (
-                            <View key={section.title} className="mb-4">
-                                <Text className="text-sm font-semibold text-gray-900 dark:text-gray-50 mb-2">{section.title}</Text>
+                            <View key={section.title} style={{ marginBottom: 16 }}>
+                                <View style={{ backgroundColor: theme.chipBg, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6, alignSelf: 'flex-start', marginBottom: 10 }}>
+                                    <Text style={{ fontSize: 13, fontWeight: '700', color: theme.chipText }}>{section.title}</Text>
+                                </View>
                                 {section.items.map((item, index) => (
-                                    <View key={`${section.title}-${index}`} className="border-b border-gray-100 dark:border-gray-800 pb-2 mb-2">
-                                        <Text className="text-sm font-medium text-gray-900 dark:text-gray-50">{item.name}</Text>
-                                        {item.description && (
-                                            <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">{item.description}</Text>
-                                        )}
+                                    <View key={`${section.title}-${index}`} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingVertical: 10, borderBottomWidth: index < section.items.length - 1 ? 1 : 0, borderBottomColor: theme.border }}>
+                                        <View style={{ flex: 1, marginRight: 12 }}>
+                                            <Text style={{ fontSize: 13, fontWeight: '600', color: theme.text }}>{item.name}</Text>
+                                            {item.description && (
+                                                <Text style={{ fontSize: 12, color: theme.subtext, marginTop: 3, lineHeight: 18 }}>{item.description}</Text>
+                                            )}
+                                        </View>
                                         {item.price !== undefined && item.price !== null && (
-                                            <Text className="text-xs font-semibold text-gray-900 dark:text-gray-50 mt-1">₹{item.price}</Text>
+                                            <Text style={{ fontSize: 13, fontWeight: '700', color: '#02757A' }}>₹{item.price}</Text>
                                         )}
                                     </View>
                                 ))}
@@ -199,12 +195,13 @@ export const RestaurantDetailScreen: React.FC<Props> = ({ route }) => {
                     </View>
                 )}
 
+                {/* Navigate button */}
                 {normalizedRestaurant.location?.lat && normalizedRestaurant.location?.lng && (
                     <TouchableOpacity
-                        className="mt-6 bg-[#02757A] px-4 py-4 rounded-2xl items-center"
+                        style={{ marginTop: 20, backgroundColor: '#02757A', paddingVertical: 16, borderRadius: 20, alignItems: 'center', shadowColor: '#02757A', shadowOpacity: 0.35, shadowRadius: 12, elevation: 6 }}
                         onPress={() => openInMaps(normalizedRestaurant.location!.lat!, normalizedRestaurant.location!.lng!)}
                     >
-                        <Text className="text-white font-semibold text-base">Navigate in Google Maps</Text>
+                        <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>🗺️  Navigate in Google Maps</Text>
                     </TouchableOpacity>
                 )}
             </View>

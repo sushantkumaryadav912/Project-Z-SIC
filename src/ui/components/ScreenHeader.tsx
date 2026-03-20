@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '@/app/navigation/types';
-import { useAppSelector } from '@/hooks/useAppStore';
+import { useTheme } from '@/ui/context/ThemeContext';
 
 type ScreenHeaderProps = {
     title: string;
@@ -21,28 +21,30 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
     showSearch = true 
 }) => {
     const navigation = useNavigation<NavigationProp>();
-    const theme = useAppSelector((state) => state.ui.theme);
-    const isDark = theme === 'dark';
+    const theme = useTheme();
 
     return (
-        <View>
-            <View className="flex-row items-center justify-between">
-                <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50">{title}</Text>
-                <View className="flex-row items-center">
+        <View style={{ paddingTop: 8, paddingBottom: 4 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 28, fontWeight: '900', color: theme.text, letterSpacing: -0.5 }}>{title}</Text>
+                    {subtitle ? (
+                        <Text style={{ fontSize: 13, color: theme.subtext, marginTop: 3, fontWeight: '500', letterSpacing: 0.1 }}>{subtitle}</Text>
+                    ) : null}
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginLeft: 12 }}>
                     {showSearch && (
                         <TouchableOpacity
                             data-testid="search-icon-button"
                             onPress={() => navigation.navigate('Search')}
-                            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-full px-3 py-2 mr-2"
-                            style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 }]}
+                            style={{ backgroundColor: theme.card, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 4, elevation: 2 }}
                         >
-                            <Text className="text-xs font-semibold text-gray-700 dark:text-gray-200">Search</Text>
+                            <Text style={{ fontSize: 12, fontWeight: '700', color: theme.sectionLabel }}>🔍 Search</Text>
                         </TouchableOpacity>
                     )}
                     {rightSlot}
                 </View>
             </View>
-            {subtitle ? <Text className="text-sm text-gray-600 dark:text-gray-300 mt-1">{subtitle}</Text> : null}
         </View>
     );
 };

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import { Tiffin } from '@/domains/tiffins/types';
-import { useAppSelector } from '@/hooks/useAppStore';
+import { useTheme } from '@/ui/context/ThemeContext';
 
 interface TiffinCardProps {
     item: Tiffin;
@@ -9,8 +9,7 @@ interface TiffinCardProps {
 }
 
 export const TiffinCard = memo<TiffinCardProps>(({ item, onPress }) => {
-    const theme = useAppSelector((state) => state.ui.theme);
-    const isDark = theme === 'dark';
+    const theme = useTheme();
 
     const getPriceValue = (item: Tiffin) => {
         if (typeof item.pricePerMeal === 'number') return item.pricePerMeal;
@@ -28,43 +27,64 @@ export const TiffinCard = memo<TiffinCardProps>(({ item, onPress }) => {
     return (
         <TouchableOpacity
             data-testid={`tiffin-card-${item._id}`}
-            className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden mb-4 shadow-sm"
-            style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 10, elevation: 2 }]}
+            activeOpacity={0.92}
+            style={{
+                backgroundColor: theme.card,
+                borderRadius: 24,
+                overflow: 'hidden',
+                marginBottom: 18,
+                shadowColor: '#b45309',
+                shadowOpacity: 0.10,
+                shadowRadius: 16,
+                shadowOffset: { width: 0, height: 4 },
+                elevation: 4,
+            }}
             onPress={() => onPress(item._id || 'unknown')}
         >
-            <View className="h-40 bg-gray-100 dark:bg-gray-800">
+            <View style={{ height: 180, backgroundColor: '#fef3e2' }}>
                 {imageUrl ? (
-                    <Image source={{ uri: imageUrl }} className="h-40 w-full" />
+                    <ImageBackground source={{ uri: imageUrl }} style={{ flex: 1 }} resizeMode="cover">
+                        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 80, backgroundColor: 'rgba(0,0,0,0.38)' }} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 12 }}>
+                            {item.vegOnly && (
+                                <View style={{ backgroundColor: '#16a34a', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
+                                    <Text style={{ color: '#fff', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 }}>🌿 VEG ONLY</Text>
+                                </View>
+                            )}
+                            {priceValue !== null && (
+                                <View style={{ marginLeft: 'auto', backgroundColor: 'rgba(0,0,0,0.55)', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
+                                    <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700' }}>₹{priceValue} / meal</Text>
+                                </View>
+                            )}
+                        </View>
+                    </ImageBackground>
                 ) : (
-                    <View className="flex-1 items-center justify-center">
-                        <Text className="text-xs text-gray-500 dark:text-gray-400">No image</Text>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 40 }}>🍱</Text>
+                        <Text style={{ fontSize: 12, color: theme.subtext, marginTop: 6 }}>No image available</Text>
                     </View>
                 )}
             </View>
-            <View className="p-4">
-                <Text className="text-base font-bold text-gray-900 dark:text-gray-50" numberOfLines={1}>
+
+            <View style={{ padding: 16 }}>
+                <Text style={{ fontSize: 17, fontWeight: '800', color: theme.text }} numberOfLines={1}>
                     {item.name || 'Unnamed Tiffin'}
                 </Text>
                 {item.shortDescription && (
-                    <Text className="text-sm text-gray-600 dark:text-gray-300 mt-1" numberOfLines={2}>
+                    <Text style={{ fontSize: 12, color: theme.subtext, marginTop: 8, lineHeight: 18 }} numberOfLines={2}>
                         {item.shortDescription}
                     </Text>
                 )}
-                <View className="flex-row items-center justify-between mt-3">
-                    {priceValue !== null && (
-                        <Text className="text-xs font-semibold text-[#02757A]">₹{priceValue} / meal</Text>
-                    )}
-                    {item.vegOnly && (
-                        <View className="bg-emerald-50 dark:bg-emerald-950 px-2 py-1 rounded-full">
-                            <Text className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">Veg Only</Text>
-                        </View>
-                    )}
+                <View style={{ height: 1, backgroundColor: theme.border, marginTop: 12, marginBottom: 10 }} />
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 12, color: theme.subtext, fontWeight: '500' }}>Tap to explore plans</Text>
+                    <View style={{ backgroundColor: '#b45309', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}>
+                        <Text style={{ color: '#fff', fontSize: 12, fontWeight: '700' }}>View →</Text>
+                    </View>
                 </View>
             </View>
         </TouchableOpacity>
     );
-}, (prevProps, nextProps) => {
-    return prevProps.item._id === nextProps.item._id;
-});
+}, () => false);
 
 TiffinCard.displayName = 'TiffinCard';

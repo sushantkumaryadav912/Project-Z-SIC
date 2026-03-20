@@ -9,7 +9,7 @@ import { RestaurantListScreen } from '@/domains/restaurants/screens/RestaurantLi
 import { SettingsScreen } from '@/domains/settings/screens/SettingsScreen';
 import { TiffinDetailScreen } from '@/domains/tiffins/screens/TiffinDetailScreen';
 import { TiffinListScreen } from '@/domains/tiffins/screens/TiffinListScreen';
-import { useTheme } from '@/ui/theme';
+import { Ionicons } from '@expo/vector-icons';
 import type {
     EventsStackParamList,
     MainTabsParamList,
@@ -62,41 +62,33 @@ export const TabsNavigator = () => {
 
     return (
         <Tab.Navigator
-            screenOptions={({ route }) => {
-                return {
-                    headerShown: false,
-                    tabBarIcon: ({ color, focused }) => {
-                        const iconName = (() => {
-                            switch (route.name) {
-                                case 'RestaurantsStack':
-                                    return focused ? 'restaurant' : 'restaurant-outline';
-                                case 'TiffinStack':
-                                    return focused ? 'fast-food' : 'fast-food-outline';
-                                case 'EventsStack':
-                                    return focused ? 'calendar' : 'calendar-outline';
-                                case 'SettingsStack':
-                                    return focused ? 'settings' : 'settings-outline';
-                                default:
-                                    return focused ? 'help-circle' : 'help-circle-outline';
-                            }
-                        })();
-
-                        return <Ionicons name={iconName} size={24} color={color} />;
-                    },
-                    tabBarStyle: {
-                        backgroundColor: tabBackground,
-                        borderTopColor: tabBorder,
-                        height: 70,
-                        paddingTop: 8,
-                        paddingBottom: 10,
-                    },
-                    tabBarLabelStyle: {
-                        marginTop: 2,
-                    },
-                    tabBarActiveTintColor: activeColor,
-                    tabBarInactiveTintColor: inactiveColor,
-                };
-            }}
+            screenOptions={({ route }) => ({
+                headerShown: false,
+                tabBarStyle: {
+                    backgroundColor: '#ffffff',
+                    borderTopColor: '#f3f4f6',
+                    borderTopWidth: 1,
+                    height: 90,
+                    paddingBottom: 30,
+                    paddingTop: 8,
+                },
+                tabBarActiveTintColor: '#02757A',
+                tabBarInactiveTintColor: '#6b7280',
+                tabBarLabelStyle: {
+                    fontSize: 11,
+                    fontWeight: '600',
+                },
+                tabBarIcon: ({ focused, color, size }) => {
+                    const icons: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
+                        RestaurantsStack: { active: 'restaurant', inactive: 'restaurant-outline' },
+                        TiffinStack: { active: 'fast-food', inactive: 'fast-food-outline' },
+                        EventsStack: { active: 'calendar', inactive: 'calendar-outline' },
+                        SettingsStack: { active: 'settings', inactive: 'settings-outline' },
+                    };
+                    const icon = icons[route.name];
+                    return <Ionicons name={focused ? icon.active : icon.inactive} size={22} color={color} />;
+                },
+            })}
         >
             <Tab.Screen name="RestaurantsStack" component={RestaurantsStackNavigator} options={{ title: 'Restaurants' }} />
             <Tab.Screen name="TiffinStack" component={TiffinStackNavigator} options={{ title: 'Tiffin' }} />
