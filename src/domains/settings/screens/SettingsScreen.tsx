@@ -5,67 +5,69 @@ import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
 import { setTheme } from '@/store/slices/uiSlice';
 import { ScreenHeader } from '@/ui/components/ScreenHeader';
+import { useTheme } from '@/ui/context/ThemeContext';
 
 export const SettingsScreen: React.FC = () => {
     const dispatch = useAppDispatch();
-    const theme = useAppSelector((state) => state.ui.theme);
+    const theme = useTheme();
+    const themeMode = useAppSelector((state) => state.ui.theme);
     const { data: featureFlags } = useFeatureFlags();
 
     const appVersion = appConfig?.expo?.version || '1.0.0';
     const flagEntries = useMemo(() => Object.entries(featureFlags || {}), [featureFlags]);
 
     return (
-        <View className="flex-1 bg-[#f2f6f6]">
-            <View className="bg-[#f0f4ff] px-5 pt-12 pb-6">
-                <View className="absolute right-[-30px] top-[-20px] h-28 w-28 rounded-full bg-[#e1e9ff]" />
-                <View className="absolute left-[-20px] bottom-[-30px] h-24 w-24 rounded-full bg-[#e1e9ff]" />
-                <ScreenHeader title="Settings" subtitle="Manage your preferences" />
+        <View style={{ flex: 1, backgroundColor: theme.bg }}>
+            <View style={{ backgroundColor: theme.headerBgSettings, paddingHorizontal: 20, paddingTop: 48, paddingBottom: 24, overflow: 'visible' }}>
+                <View style={{ position: 'absolute', right: 0, top: 0, height: 112, width: 112, borderRadius: 56, backgroundColor: theme.headerCircleSettings }} />
+                <View style={{ position: 'absolute', left: 0, bottom: 0, height: 96, width: 96, borderRadius: 48, backgroundColor: theme.headerCircleSettings }} />
+                <ScreenHeader title="Settings" subtitle="Manage your preferences" showSearch={false} />
             </View>
 
-            <View className="px-5 -mt-4">
-                <View className="bg-white rounded-3xl p-5 mb-4 shadow-sm" style={{ shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
-                    <Text className="text-base font-semibold text-gray-900">Appearance</Text>
-                    <View className="flex-row items-center justify-between mt-3">
-                        <Text className="text-sm text-gray-600">Theme</Text>
-                        <View className="flex-row items-center">
-                            <Text className="text-xs text-gray-500 mr-2">{theme === 'dark' ? 'Dark' : 'Light'}</Text>
+            <View style={{ paddingHorizontal: 20, marginTop: -16, zIndex: 1 }}>
+                <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: theme.text }}>Appearance</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 14 }}>
+                        <Text style={{ fontSize: 14, color: theme.subtext }}>Theme</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ fontSize: 12, color: theme.subtext, marginRight: 8 }}>{themeMode === 'dark' ? 'Dark' : 'Light'}</Text>
                             <Switch
-                                value={theme === 'dark'}
-                                onValueChange={(value) => {
-                                    dispatch(setTheme(value ? 'dark' : 'light'));
-                                }}
+                                value={themeMode === 'dark'}
+                                onValueChange={(value) => dispatch(setTheme(value ? 'dark' : 'light'))}
+                                trackColor={{ false: '#d1d5db', true: '#02757A' }}
+                                thumbColor={themeMode === 'dark' ? '#fff' : '#f3f4f6'}
                             />
                         </View>
                     </View>
                 </View>
 
-                <View className="bg-white rounded-3xl p-5 mb-4 shadow-sm" style={{ shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
-                    <Text className="text-base font-semibold text-gray-900">Feature flags</Text>
+                <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: theme.text }}>Feature flags</Text>
                     {flagEntries.length > 0 ? (
-                        <View className="mt-3">
+                        <View style={{ marginTop: 12 }}>
                             {flagEntries.map(([key, value]) => (
-                                <View key={key} className="flex-row items-center justify-between py-2 border-b border-gray-100">
-                                    <Text className="text-sm text-gray-700">{key}</Text>
-                                    <Text className={`text-xs font-semibold ${value ? 'text-emerald-600' : 'text-gray-400'}`}>
+                                <View key={key} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: theme.border }}>
+                                    <Text style={{ fontSize: 13, color: theme.text }}>{key}</Text>
+                                    <Text style={{ fontSize: 12, fontWeight: '700', color: value ? '#16a34a' : theme.subtext }}>
                                         {value ? 'Enabled' : 'Disabled'}
                                     </Text>
                                 </View>
                             ))}
                         </View>
                     ) : (
-                        <Text className="text-sm text-gray-500 mt-3">No flags available.</Text>
+                        <Text style={{ fontSize: 13, color: theme.subtext, marginTop: 12 }}>No flags available.</Text>
                     )}
                 </View>
 
-                <View className="bg-white rounded-3xl p-5 mb-4 shadow-sm" style={{ shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
-                    <Text className="text-base font-semibold text-gray-900">App</Text>
-                    <Text className="text-sm text-gray-600 mt-2">Version: {appVersion}</Text>
-                    <Text className="text-sm text-gray-600 mt-1">Strategic Information Center</Text>
+                <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: theme.text }}>App</Text>
+                    <Text style={{ fontSize: 13, color: theme.subtext, marginTop: 8 }}>Version: {appVersion}</Text>
+                    <Text style={{ fontSize: 13, color: theme.subtext, marginTop: 4 }}>Strategic Information Center</Text>
                 </View>
 
-                <View className="bg-white rounded-3xl p-5 mb-6 shadow-sm" style={{ shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
-                    <Text className="text-base font-semibold text-gray-900">About</Text>
-                    <Text className="text-sm text-gray-600 mt-2">
+                <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 20, marginBottom: 24, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, elevation: 2 }}>
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: theme.text }}>About</Text>
+                    <Text style={{ fontSize: 13, color: theme.subtext, marginTop: 8, lineHeight: 20 }}>
                         SIC helps you discover trusted restaurants, tiffin services, and local events.
                     </Text>
                 </View>

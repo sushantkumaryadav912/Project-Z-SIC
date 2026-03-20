@@ -7,17 +7,20 @@ import { linking } from '@/app/navigation/linking';
 import { queryClient } from '@/platform/api/queryClient';
 import { store } from '@/store/store';
 import { OfflineBanner } from '@/ui/components/OfflineBanner';
+import { ThemeProvider } from '@/ui/context/ThemeContext';
 import './global.css';
 
 export default function App() {
   return (
     <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <OfflineBanner />
-        <NavigationContainer linking={linking}>
-          <RootNavigator />
-        </NavigationContainer>
-      </QueryClientProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <OfflineBanner />
+          <NavigationContainer linking={linking}>
+            <RootNavigator />
+          </NavigationContainer>
+        </QueryClientProvider>
+      </ThemeProvider>
     </Provider>
   );
 }

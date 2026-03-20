@@ -11,6 +11,7 @@ import { ErrorState } from '@/ui/components/ErrorState';
 import { LoadingSkeletonList } from '@/ui/components/LoadingSkeletonList';
 import { ScreenHeader } from '@/ui/components/ScreenHeader';
 import { storage } from '@/services/storage/localStorage';
+import { useTheme } from '@/ui/context/ThemeContext';
 
 type Props = NativeStackScreenProps<TiffinStackParamList, 'TiffinList'>;
 type SortOption = 'default' | 'price-low' | 'price-high' | 'veg-first';
@@ -22,6 +23,7 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
     const [priceFilter, setPriceFilter] = useState<'budget' | 'mid' | 'premium' | null>(null);
     const [sortBy, setSortBy] = useState<SortOption>('default');
     const [showSortMenu, setShowSortMenu] = useState(false);
+    const theme = useTheme();
 
     const {
         data,
@@ -133,10 +135,15 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
         <TouchableOpacity
             key={label}
             data-testid={`filter-chip-${label.toLowerCase()}`}
-            className={`mr-2 rounded-full border px-3 py-2 ${active ? 'bg-[#02757A] border-[#02757A]' : 'bg-white border-gray-200'}`}
+            style={{
+                marginRight: 8, borderRadius: 20, borderWidth: 1,
+                paddingHorizontal: 12, paddingVertical: 8,
+                backgroundColor: active ? '#02757A' : theme.chipBg,
+                borderColor: active ? '#02757A' : theme.chipBorder,
+            }}
             onPress={onPress}
         >
-            <Text className={`text-xs font-semibold ${active ? 'text-white' : 'text-gray-700'}`}>{label}</Text>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: active ? '#fff' : theme.chipText }}>{label}</Text>
         </TouchableOpacity>
     );
 
@@ -179,10 +186,10 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
     ];
 
     return (
-        <View className="flex-1 bg-[#f2f6f6]">
-            <View className="bg-[#f5efe8] px-5 pt-12 pb-6" style={{ overflow: 'visible' }}>
-                <View style={{ position: 'absolute', right: 0, top: 0, height: 112, width: 112, borderRadius: 56, backgroundColor: '#efe6db' }} />
-                <View style={{ position: 'absolute', left: 0, bottom: 0, height: 96, width: 96, borderRadius: 48, backgroundColor: '#efe6db' }} />
+        <View style={{ flex: 1, backgroundColor: theme.bg }}>
+            <View style={{ backgroundColor: theme.headerBgTiffin, paddingHorizontal: 20, paddingTop: 48, paddingBottom: 24, overflow: 'visible' }}>
+                <View style={{ position: 'absolute', right: 0, top: 0, height: 112, width: 112, borderRadius: 56, backgroundColor: theme.headerCircleTiffin }} />
+                <View style={{ position: 'absolute', left: 0, bottom: 0, height: 96, width: 96, borderRadius: 48, backgroundColor: theme.headerCircleTiffin }} />
                 <ScreenHeader
                     title="Tiffin"
                     subtitle="Home-style meal services"
@@ -190,18 +197,18 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
                         <TouchableOpacity
                             data-testid="sort-button"
                             onPress={() => setShowSortMenu(!showSortMenu)}
-                            className="bg-white rounded-full px-4 py-2"
-                            style={{ shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 6, elevation: 2 }}
+                            style={{ backgroundColor: theme.card, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 6, elevation: 2 }}
                         >
-                            <Text className="text-xs font-semibold text-gray-700">Sort ▼</Text>
+                            <Text style={{ fontSize: 12, fontWeight: '700', color: theme.sectionLabel }}>Sort ▼</Text>
                         </TouchableOpacity>
                     }
                 />
-                <View className="mt-4">
+                <View style={{ marginTop: 16 }}>
                     <TextInput
                         data-testid="search-input"
-                        className="bg-white px-4 py-3 rounded-2xl text-base text-gray-900"
+                        style={{ backgroundColor: theme.inputBg, paddingHorizontal: 16, paddingVertical: 12, borderRadius: 18, fontSize: 14, color: theme.inputText }}
                         placeholder="Search by meal plan or provider"
+                        placeholderTextColor={theme.inputPlaceholder}
                         value={query}
                         onChangeText={setQuery}
                     />
@@ -209,18 +216,15 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
             </View>
 
             {showSortMenu && (
-                <View style={{ position: 'absolute', top: 60, right: 20, zIndex: 100, backgroundColor: 'white', borderRadius: 16, elevation: 8, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, minWidth: 200 }}>
+                <View style={{ position: 'absolute', top: 100, right: 20, zIndex: 100, backgroundColor: theme.card, borderRadius: 16, elevation: 8, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, minWidth: 200 }}>
                     {sortOptions.map((option) => (
                         <TouchableOpacity
                             key={option.value}
                             data-testid={`sort-option-${option.value}`}
-                            className={`px-4 py-3 border-b border-gray-100 ${sortBy === option.value ? 'bg-[#02757A]/10' : ''}`}
-                            onPress={() => {
-                                setSortBy(option.value as SortOption);
-                                setShowSortMenu(false);
-                            }}
+                            style={{ paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: theme.border, backgroundColor: sortBy === option.value ? (theme.dark ? '#1e1510' : '#f5efe8') : 'transparent' }}
+                            onPress={() => { setSortBy(option.value as SortOption); setShowSortMenu(false); }}
                         >
-                            <Text className={`text-sm font-semibold ${sortBy === option.value ? 'text-[#02757A]' : 'text-gray-900'}`}>
+                            <Text style={{ fontSize: 14, fontWeight: '600', color: sortBy === option.value ? '#02757A' : theme.text }}>
                                 {option.label}
                             </Text>
                         </TouchableOpacity>
@@ -228,10 +232,10 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
                 </View>
             )}
 
-            <View className="px-5 -mt-4" style={{ zIndex: 1 }}>
-                <View className="bg-white rounded-3xl p-4 shadow-sm" style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }}>
-                    <Text className="text-sm font-semibold text-gray-800">Quick filters</Text>
-                    <View className="flex-row mt-3">
+            <View style={{ paddingHorizontal: 20, marginTop: -16, zIndex: 1 }}>
+                <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 16, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: theme.sectionLabel }}>Quick filters</Text>
+                    <View style={{ flexDirection: 'row', marginTop: 12 }}>
                         {renderChip('Veg', vegOnly, () => setVegOnly((prev) => !prev))}
                         {renderChip('Budget', priceFilter === 'budget', () => setPriceFilter(priceFilter === 'budget' ? null : 'budget'))}
                         {renderChip('Mid', priceFilter === 'mid', () => setPriceFilter(priceFilter === 'mid' ? null : 'mid'))}
