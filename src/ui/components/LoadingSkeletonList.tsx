@@ -1,17 +1,16 @@
 import React from 'react';
 import { View } from 'react-native';
-import { useAppSelector } from '@/hooks/useAppStore';
+import { useTheme } from '@/ui/theme';
 
 type LoadingSkeletonListProps = {
     count?: number;
 };
 
 export const LoadingSkeletonList: React.FC<LoadingSkeletonListProps> = ({ count = 3 }) => {
-    const theme = useAppSelector((state) => state.ui.theme);
-    const isDark = theme === 'dark';
+    const { isDark, colors } = useTheme();
 
     return (
-        <View className="px-5 pt-2">
+        <View className="flex-1 px-4 pt-2" style={{ backgroundColor: colors.background }}>
             {Array.from({ length: count }).map((_, index) => (
                 <View
                     key={`skeleton-${index}`}

@@ -10,15 +10,15 @@ import { EmptyState } from '@/ui/components/EmptyState';
 import { ErrorState } from '@/ui/components/ErrorState';
 import { LoadingSkeletonList } from '@/ui/components/LoadingSkeletonList';
 import { ScreenHeader } from '@/ui/components/ScreenHeader';
+import { FilterChip } from '@/ui/components/FilterChip';
 import { storage } from '@/services/storage/localStorage';
-import { useAppSelector } from '@/hooks/useAppStore';
+import { useTheme } from '@/ui/theme';
 
 type Props = NativeStackScreenProps<TiffinStackParamList, 'TiffinList'>;
 type SortOption = 'default' | 'price-low' | 'price-high' | 'veg-first';
 
 export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
-    const theme = useAppSelector((state) => state.ui.theme);
-    const isDark = theme === 'dark';
+    const { isDark, colors } = useTheme();
 
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -133,17 +133,6 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
         return filtered;
     }, [allTiffins, debouncedQuery, vegOnly, priceFilter, sortBy]);
 
-    const renderChip = (label: string, active: boolean, onPress: () => void) => (
-        <TouchableOpacity
-            key={label}
-            data-testid={`filter-chip-${label.toLowerCase()}`}
-            className={`mr-2 mb-2 rounded-full border px-3 py-2 ${active ? 'bg-[#02757A] border-[#02757A]' : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700'}`}
-            onPress={onPress}
-        >
-            <Text className={`text-xs font-semibold ${active ? 'text-white' : 'text-gray-700 dark:text-gray-200'}`}>{label}</Text>
-        </TouchableOpacity>
-    );
-
     const handleTiffinPress = useCallback((id: string) => {
         navigation.navigate('TiffinDetail', { id });
     }, [navigation]);
@@ -164,7 +153,7 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
         if (!isFetchingNextPage) return null;
         return (
             <View className="py-4">
-                <ActivityIndicator size="small" color="#02757A" />
+                <ActivityIndicator size="small" color={colors.primary} />
             </View>
         );
     };
@@ -183,8 +172,8 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
     ];
 
     return (
-        <View className="flex-1 bg-[#f2f6f6] dark:bg-gray-950">
-            <View className="bg-[#f5efe8] dark:bg-gray-900 px-5 pt-12 pb-6">
+        <View className="flex-1" style={{ backgroundColor: colors.background }}>
+            <View className="bg-[#f5efe8] dark:bg-gray-900 px-4 pt-12 pb-6">
                 <View className="absolute right-[-30px] top-[-20px] h-28 w-28 rounded-full bg-[#efe6db] dark:bg-gray-800" />
                 <View className="absolute left-[-20px] bottom-[-30px] h-24 w-24 rounded-full bg-[#efe6db] dark:bg-gray-800" />
                 <ScreenHeader
@@ -206,6 +195,7 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
                         data-testid="search-input"
                         className="bg-white dark:bg-gray-900 px-4 py-3 rounded-2xl text-base text-gray-900 dark:text-gray-50"
                         placeholder="Search by meal plan or provider"
+                        placeholderTextColor={colors.textMuted}
                         value={query}
                         onChangeText={setQuery}
                     />
@@ -214,7 +204,7 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
 
             {showSortMenu && (
                 <View
-                    className="bg-white dark:bg-gray-900 mx-5 rounded-2xl mb-2 border border-gray-100 dark:border-gray-800"
+                    className="bg-white dark:bg-gray-900 mx-4 rounded-2xl mb-2 border border-gray-100 dark:border-gray-800"
                     style={{ elevation: isDark ? 0 : 4 }}
                 >
                     {sortOptions.map((option) => (
@@ -235,17 +225,37 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
                 </View>
             )}
 
-            <View className="px-5 -mt-4">
+            <View className="px-4 -mt-4">
                 <View
                     className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-4 shadow-sm"
                     style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }]}
                 >
                     <Text className="text-sm font-semibold text-gray-800 dark:text-gray-200">Quick filters</Text>
                     <View className="flex-row flex-wrap mt-3">
-                        {renderChip('Veg', vegOnly, () => setVegOnly((prev) => !prev))}
-                        {renderChip('Budget', priceFilter === 'budget', () => setPriceFilter(priceFilter === 'budget' ? null : 'budget'))}
-                        {renderChip('Mid', priceFilter === 'mid', () => setPriceFilter(priceFilter === 'mid' ? null : 'mid'))}
-                        {renderChip('Premium', priceFilter === 'premium', () => setPriceFilter(priceFilter === 'premium' ? null : 'premium'))}
+                        <FilterChip
+                            label="Veg"
+                            selected={vegOnly}
+                            onPress={() => setVegOnly((prev) => !prev)}
+                            testID="filter-chip-veg"
+                        />
+                        <FilterChip
+                            label="Budget"
+                            selected={priceFilter === 'budget'}
+                            onPress={() => setPriceFilter(priceFilter === 'budget' ? null : 'budget')}
+                            testID="filter-chip-budget"
+                        />
+                        <FilterChip
+                            label="Mid"
+                            selected={priceFilter === 'mid'}
+                            onPress={() => setPriceFilter(priceFilter === 'mid' ? null : 'mid')}
+                            testID="filter-chip-mid"
+                        />
+                        <FilterChip
+                            label="Premium"
+                            selected={priceFilter === 'premium'}
+                            onPress={() => setPriceFilter(priceFilter === 'premium' ? null : 'premium')}
+                            testID="filter-chip-premium"
+                        />
                     </View>
                 </View>
             </View>
@@ -259,7 +269,7 @@ export const TiffinListScreen: React.FC<Props> = ({ navigation }) => {
                     data={filteredAndSortedTiffins}
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
-                    contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32, paddingTop: 20 }}
+                    contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, paddingTop: 20 }}
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
                     ListFooterComponent={renderFooter}

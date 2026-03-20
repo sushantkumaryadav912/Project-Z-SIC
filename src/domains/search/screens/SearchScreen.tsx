@@ -5,13 +5,12 @@ import { RootStackParamList } from '@/app/navigation/types';
 import { ScreenHeader } from '@/ui/components/ScreenHeader';
 import { useGlobalSearch } from '../hooks/useGlobalSearch';
 import { SearchResultsSection } from '../components/SearchResultsSection';
-import { useAppSelector } from '@/hooks/useAppStore';
+import { useTheme } from '@/ui/theme';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Search'>;
 
 export const SearchScreen: React.FC<Props> = ({ navigation }) => {
-    const theme = useAppSelector((state) => state.ui.theme);
-    const isDark = theme === 'dark';
+    const { isDark, colors } = useTheme();
 
     const [query, setQuery] = useState('');
     const trimmedQuery = useMemo(() => query.trim(), [query]);
@@ -42,38 +41,38 @@ export const SearchScreen: React.FC<Props> = ({ navigation }) => {
     };
 
     return (
-        <View className="flex-1 bg-[#f2f6f6] dark:bg-slate-950">
-            <View className="bg-[#f0f4ff] dark:bg-slate-900 px-5 pt-12 pb-6">
-                <View className="absolute right-[-30px] top-[-20px] h-28 w-28 rounded-full bg-[#e1e9ff] dark:bg-slate-800" />
-                <View className="absolute left-[-20px] bottom-[-30px] h-24 w-24 rounded-full bg-[#e1e9ff] dark:bg-slate-800" />
+        <View className="flex-1" style={{ backgroundColor: colors.background }}>
+            <View className="bg-[#f0f4ff] dark:bg-gray-900 px-4 pt-12 pb-6">
+                <View className="absolute right-[-30px] top-[-20px] h-28 w-28 rounded-full bg-[#e1e9ff] dark:bg-gray-800" />
+                <View className="absolute left-[-20px] bottom-[-30px] h-24 w-24 rounded-full bg-[#e1e9ff] dark:bg-gray-800" />
                 <ScreenHeader title="Search" subtitle="Find restaurants, tiffins, and events" showSearch={false} />
                 <View className="mt-4">
                     <TextInput
-                        className="bg-white dark:bg-slate-950 px-4 py-3 rounded-2xl text-base text-gray-900 dark:text-slate-100"
+                        className="bg-white dark:bg-gray-900 px-4 py-3 rounded-2xl text-base text-gray-900 dark:text-gray-50"
                         placeholder="Search"
-                        placeholderTextColor={isDark ? '#94A3B8' : '#6B7280'}
+                        placeholderTextColor={colors.textMuted}
                         value={query}
                         onChangeText={setQuery}
                     />
                 </View>
             </View>
-            <View className="px-5 -mt-4">
+            <View className="px-4 -mt-4">
                 <View
-                    className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-3xl p-4 shadow-sm"
+                    className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-4 shadow-sm"
                     style={[isDark ? null : { shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }]}
                 >
                 {trimmedQuery.length === 0 ? (
-                    <Text className="text-sm text-gray-500 dark:text-slate-400 mt-2">
+                    <Text className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                         Start typing to search across categories.
                     </Text>
                 ) : isLoading ? (
                     <View className="mt-4 items-center">
-                        <ActivityIndicator color="#02757A" />
+                        <ActivityIndicator color={colors.primary} />
                     </View>
                 ) : (
                     <View className="mt-4">
                         {data ? (
-                            <Text className="text-xs text-gray-500 dark:text-slate-400 mb-3">
+                            <Text className="text-xs text-gray-500 dark:text-gray-400 mb-3">
                                 {data.restaurants.length + data.tiffins.length + data.events.length} results
                             </Text>
                         ) : null}
@@ -96,7 +95,7 @@ export const SearchScreen: React.FC<Props> = ({ navigation }) => {
                         data.restaurants.length === 0 &&
                         data.tiffins.length === 0 &&
                         data.events.length === 0 ? (
-                            <Text className="text-sm text-gray-500 dark:text-slate-400 mt-4 text-center">No results found.</Text>
+                            <Text className="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">No results found.</Text>
                         ) : null}
                     </View>
                 )}

@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { DarkTheme, DefaultTheme } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { EventDetailScreen } from '@/domains/events/screens/EventDetailScreen';
 import { EventListScreen } from '@/domains/events/screens/EventListScreen';
@@ -10,7 +9,7 @@ import { RestaurantListScreen } from '@/domains/restaurants/screens/RestaurantLi
 import { SettingsScreen } from '@/domains/settings/screens/SettingsScreen';
 import { TiffinDetailScreen } from '@/domains/tiffins/screens/TiffinDetailScreen';
 import { TiffinListScreen } from '@/domains/tiffins/screens/TiffinListScreen';
-import { useAppSelector } from '@/hooks/useAppStore';
+import { useTheme } from '@/ui/theme';
 import type {
     EventsStackParamList,
     MainTabsParamList,
@@ -53,15 +52,20 @@ const SettingsStackNavigator = () => (
 );
 
 export const TabsNavigator = () => {
-    const theme = useAppSelector((state) => state.ui.theme);
-    const navTheme = theme === 'dark' ? DarkTheme : DefaultTheme;
+    const { isDark, colors } = useTheme();
+
+    // Keep tab highlight consistent with in-screen primary actions (e.g. selected filter chip)
+    const activeColor = colors.primary;
+    const inactiveColor = isDark ? '#AAA' : '#888';
+    const tabBackground = isDark ? '#121212' : '#FFFFFF';
+    const tabBorder = isDark ? '#222' : '#E5E5E5';
 
     return (
         <Tab.Navigator
             screenOptions={({ route }) => {
                 return {
                     headerShown: false,
-                    tabBarIcon: ({ color, size, focused }) => {
+                    tabBarIcon: ({ color, focused }) => {
                         const iconName = (() => {
                             switch (route.name) {
                                 case 'RestaurantsStack':
@@ -77,11 +81,11 @@ export const TabsNavigator = () => {
                             }
                         })();
 
-                        return <Ionicons name={iconName} size={size} color={color} />;
+                        return <Ionicons name={iconName} size={24} color={color} />;
                     },
                     tabBarStyle: {
-                        backgroundColor: navTheme.colors.card,
-                        borderTopColor: navTheme.colors.border,
+                        backgroundColor: tabBackground,
+                        borderTopColor: tabBorder,
                         height: 70,
                         paddingTop: 8,
                         paddingBottom: 10,
@@ -89,8 +93,8 @@ export const TabsNavigator = () => {
                     tabBarLabelStyle: {
                         marginTop: 2,
                     },
-                    tabBarActiveTintColor: navTheme.colors.primary,
-                    tabBarInactiveTintColor: navTheme.colors.text,
+                    tabBarActiveTintColor: activeColor,
+                    tabBarInactiveTintColor: inactiveColor,
                 };
             }}
         >

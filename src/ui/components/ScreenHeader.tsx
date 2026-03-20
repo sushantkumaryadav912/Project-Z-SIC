@@ -1,4 +1,5 @@
-import React from 'react';import { View, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '@/app/navigation/types';
@@ -24,7 +25,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
     const isDark = theme === 'dark';
 
     return (
-        <View className="px-5 pt-6 pb-3">
+        <View>
             <View className="flex-row items-center justify-between">
                 <Text className="text-2xl font-bold text-gray-900 dark:text-gray-50">{title}</Text>
                 <View className="flex-row items-center">
