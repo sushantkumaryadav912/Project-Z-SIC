@@ -92,18 +92,18 @@ export const SettingsScreen: React.FC = () => {
                                 borderColor: theme.border
                             }}
                         >
-                            <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: '#f3f4f6', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', borderWidth: 1, borderColor: theme.border }}>
+                            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#f3f4f6', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', borderWidth: 1, borderColor: theme.border }}>
                                 {user.photoURL ? (
-                                    <Image source={{ uri: user.photoURL }} style={{ width: 56, height: 56, borderRadius: 28 }} />
+                                    <Image source={{ uri: user.photoURL }} style={{ width: 40, height: 40, borderRadius: 20 }} />
                                 ) : (
-                                    <Ionicons name="person-circle" size={56} color="#d1d5db" />
+                                    <Ionicons name="person" size={20} color="#d1d5db" />
                                 )}
                             </View>
-                            <View style={{ marginLeft: 16, flex: 1 }}>
-                                <Text style={{ fontSize: 18, fontWeight: '700', color: theme.text }}>{user.name}</Text>
+                            <View style={{ marginLeft: 12, flex: 1, justifyContent: 'center' }}>
+                                <Text style={{ fontSize: 16, fontWeight: '700', color: theme.text }}>{user.name}</Text>
                                 <Text style={{ fontSize: 13, color: theme.subtext, marginTop: 2 }}>{user.email}</Text>
                             </View>
-                            <Ionicons name="chevron-forward-outline" size={20} color={theme.subtext} />
+                            <Ionicons name="chevron-forward" size={18} color={theme.subtext} />
                         </TouchableOpacity>
                     ) : (
                         <View style={{ 

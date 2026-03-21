@@ -13,6 +13,7 @@ type ScreenHeaderProps = {
     showSearch?: boolean;
     onBack?: () => void;
     backIcon?: keyof typeof Ionicons.glyphMap;
+    compact?: boolean;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -23,26 +24,31 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
     rightSlot, 
     showSearch = true,
     onBack,
-    backIcon = 'chevron-back'
+    backIcon = 'chevron-back',
+    compact = false
 }) => {
     const navigation = useNavigation<NavigationProp>();
     const theme = useTheme();
 
     return (
-        <View style={{ paddingTop: 8, paddingBottom: 4 }}>
+        <View style={{ paddingTop: compact ? 4 : 8, paddingBottom: compact ? 4 : 8 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {onBack && (
                     <TouchableOpacity 
                         onPress={onBack}
-                        style={{ marginRight: 12, padding: 4 }}
+                        style={{ marginRight: compact ? 8 : 12, padding: compact ? 2 : 4 }}
                     >
-                        <Ionicons name={backIcon} size={28} color={theme.text} />
+                        <Ionicons name={backIcon} size={compact ? 24 : 28} color={theme.text} />
                     </TouchableOpacity>
                 )}
-                <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 28, fontWeight: '900', color: theme.text, letterSpacing: -0.5 }}>{title}</Text>
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <Text style={{ fontSize: compact ? 20 : 24, fontWeight: '800', color: theme.text, letterSpacing: -0.5 }}>{title}</Text>
                     {subtitle ? (
-                        <Text style={{ fontSize: 13, color: theme.subtext, marginTop: 3, fontWeight: '500', letterSpacing: 0.1 }}>{subtitle}</Text>
+                        <Text 
+                            style={{ fontSize: compact ? 12 : 13, color: theme.subtext, marginTop: compact ? 2 : 4, fontWeight: '500' }}
+                        >
+                            {subtitle}
+                        </Text>
                     ) : null}
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginLeft: 12 }}>

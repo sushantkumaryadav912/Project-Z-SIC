@@ -72,7 +72,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [user]);
 
     const login = useCallback(async (userData: Omit<User, 'isGuest'>) => {
-        const newUser: User = { ...userData, isGuest: false };
+        const newUser: User = { 
+            name: userData.name || 'User',
+            email: userData.email || '',
+            phone: userData.phone || '',
+            photoURL: userData.photoURL || undefined,
+            location: userData.location || 'India',
+            isGuest: false 
+        };
         setUser(newUser);
         try {
             await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(newUser));

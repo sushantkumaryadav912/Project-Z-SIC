@@ -118,72 +118,68 @@ export const EditProfileScreen: React.FC = () => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{ flex: 1, backgroundColor: theme.bg }}
         >
-            <View style={{ backgroundColor: theme.headerBgSettings, paddingHorizontal: 20, paddingTop: 60, paddingBottom: 24, overflow: 'hidden' }}>
+            <View style={{ backgroundColor: theme.headerBgSettings, paddingHorizontal: 16, paddingTop: 48, paddingBottom: 16, overflow: 'hidden' }}>
                 <View style={{ position: 'absolute', right: -20, top: -10, width: 80, height: 80, borderRadius: 40, backgroundColor: theme.headerCircleSettings, opacity: 0.5 }} />
                 <ScreenHeader 
                     title="Edit Profile" 
                     subtitle="Customize your public information" 
                     showSearch={false}
                     onBack={() => navigation.goBack()}
+                    compact
                 />
             </View>
 
             <ScrollView contentContainerStyle={{ padding: 16 }}>
                 {/* Avatar Section */}
-                <View style={{ alignItems: 'center', marginBottom: 32 }}>
+                <View style={{ alignItems: 'center', marginBottom: 20, marginTop: 4 }}>
                     <TouchableOpacity 
                         activeOpacity={0.9}
                         onPress={pickImage}
                         style={{ 
-                            width: 120, 
-                            height: 120, 
-                            borderRadius: 60, 
+                            width: 76, 
+                            height: 76, 
+                            borderRadius: 38, 
                             backgroundColor: '#fff',
                             justifyContent: 'center',
                             alignItems: 'center',
                             shadowColor: '#000',
                             shadowOpacity: 0.1,
-                            shadowRadius: 15,
-                            elevation: 8,
-                            position: 'relative',
-                            padding: 4
+                            shadowRadius: 8,
+                            elevation: 4,
                         }}
                     >
-                        <View style={{ width: '100%', height: '100%', borderRadius: 56, overflow: 'hidden', backgroundColor: '#f3f4f6', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ width: '100%', height: '100%', borderRadius: 38, overflow: 'hidden', backgroundColor: '#f3f4f6', justifyContent: 'center', alignItems: 'center' }}>
                             {photoURL ? (
-                                <Image 
-                                    source={{ uri: photoURL }} 
-                                    style={{ width: '100%', height: '100%' }} 
-                                />
+                                <Image source={{ uri: photoURL }} style={{ width: '100%', height: '100%' }} />
                             ) : (
-                                <Ionicons name="person" size={56} color={theme.subtext} />
+                                <Ionicons name="person" size={36} color={theme.subtext} />
                             )}
                         </View>
                         <View style={{
                             position: 'absolute',
-                            bottom: 4,
-                            right: 4,
+                            bottom: -2,
+                            right: -2,
                             backgroundColor: '#02757A',
-                            width: 36,
-                            height: 36,
-                            borderRadius: 18,
+                            width: 26,
+                            height: 26,
+                            borderRadius: 13,
                             justifyContent: 'center',
                             alignItems: 'center',
-                            borderWidth: 3,
+                            borderWidth: 2,
                             borderColor: '#fff',
                             shadowColor: '#000',
                             shadowOpacity: 0.2,
-                            shadowRadius: 4,
-                            elevation: 4
+                            shadowRadius: 3,
+                            elevation: 3
                         }}>
-                            <Ionicons name="camera" size={18} color="#fff" />
+                            <Ionicons name="camera" size={14} color="#fff" />
                         </View>
                     </TouchableOpacity>
-                    <Text style={{ marginTop: 12, fontSize: 14, fontWeight: '600', color: '#02757A' }}>Change Profile Photo</Text>
+                    <Text style={{ marginTop: 8, fontSize: 12, fontWeight: '600', color: '#02757A' }}>Change Profile Photo</Text>
                 </View>
 
                 {/* Name field */}
-                <View style={{ marginBottom: 20 }}>
+                <View style={{ marginBottom: 16 }}>
                     <Text style={{ fontSize: 13, fontWeight: '700', color: focusedField === 'name' ? '#02757A' : theme.text, marginBottom: 8, marginLeft: 4 }}>FULL NAME</Text>
                     <TextInput
                         style={{
@@ -205,7 +201,7 @@ export const EditProfileScreen: React.FC = () => {
                 </View>
 
                 {/* Phone number field with country code */}
-                <View style={{ marginBottom: 20 }}>
+                <View style={{ marginBottom: 16 }}>
                     <Text style={{ fontSize: 13, fontWeight: '700', color: focusedField === 'phone' ? '#02757A' : theme.text, marginBottom: 8, marginLeft: 4 }}>PHONE NUMBER</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         {/* Country Code Dropdown Trigger */}
@@ -288,7 +284,7 @@ export const EditProfileScreen: React.FC = () => {
                 </View>
 
                 {/* Email field (read-only) */}
-                <View style={{ marginBottom: 20 }}>
+                <View style={{ marginBottom: 16 }}>
                     <Text style={{ fontSize: 13, fontWeight: '700', color: theme.text, marginBottom: 8, marginLeft: 4 }}>EMAIL ADDRESS</Text>
                     <TextInput
                         style={{
@@ -310,17 +306,19 @@ export const EditProfileScreen: React.FC = () => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     style={{
-                        marginTop: 10,
+                        marginTop: 8,
+                        marginBottom: 12,
+                        height: 48,
                         backgroundColor: '#02757A',
-                        borderRadius: 20,
-                        padding: 20,
+                        borderRadius: 12,
+                        paddingHorizontal: 20,
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexDirection: 'row',
                         shadowColor: '#02757A',
-                        shadowOpacity: 0.3,
-                        shadowRadius: 12,
-                        elevation: 6,
+                        shadowOpacity: 0.25,
+                        shadowRadius: 8,
+                        elevation: 4,
                         opacity: saving ? 0.7 : 1
                     }}
                     onPress={handleSave}
@@ -330,8 +328,8 @@ export const EditProfileScreen: React.FC = () => {
                         <ActivityIndicator color="#fff" />
                     ) : (
                         <>
-                            <Ionicons name="save-outline" size={20} color="#fff" style={{ marginRight: 10 }} />
-                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: '800' }}>Save Changes</Text>
+                            <Ionicons name="save-outline" size={18} color="#fff" style={{ marginRight: 8 }} />
+                            <Text style={{ color: '#fff', fontSize: 15, fontWeight: '600' }}>Save Changes</Text>
                         </>
                     )}
                 </TouchableOpacity>

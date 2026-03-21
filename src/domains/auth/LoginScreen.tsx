@@ -77,11 +77,19 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
             });
 
             if (response.data?.success || response.data?.message === 'Login successful!') {
+                const derivedName = form.email.split('@')[0].replace(/[^a-zA-Z0-9]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).trim();
                 const userData = response.data.user || {
-                    name: form.email.split('@')[0],
+                    name: derivedName,
                     email: form.email,
                     phone: '',
+                    location: 'India'
                 };
+                
+                // Fallback if backend user object is missing a name
+                if (!userData.name || userData.name.trim() === '') {
+                    userData.name = derivedName;
+                }
+
                 await login(userData);
                 navigation.replace('MainTabs');
                 return;
