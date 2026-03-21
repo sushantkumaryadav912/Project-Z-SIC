@@ -1,21 +1,33 @@
 import axios from 'axios';
+import { AppConfig } from '@/platform/config';
 
 export const apiClient = axios.create({
-    baseURL: 'https://project-z-backend-apis.onrender.com',
+    baseURL: AppConfig.API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
     withCredentials: true,
 });
 
-// Response interceptor
 apiClient.interceptors.response.use(
     (response) => {
         console.log(`[API SUCCESS] ${response.config.method?.toUpperCase()} ${response.config.url}`, response.status);
         return response;
     },
     (error) => {
-        console.error(`[API ERROR] ${error.config?.method?.toUpperCase()} ${error.config?.url} - ${error.message}`, error.response?.data);
+        const method = error.config?.method?.toUpperCase() || 'UNKNOWN';
+        const url = error.config?.url || 'UNKNOWN';
+        const status = error.response?.status || 'NO_RESPONSE';
+        const message = error.message || 'Unknown error';
+
+        console.error(`[API ERROR] ${method} ${url} - Status: ${status} - ${message}`);
+
+        if (error.response?.data) {
+            console.error('[API ERROR DATA]', error.response.data);
+        }
         return Promise.reject(error);
     }
 );
+
+// Log the configured base URL on initialization
+console.log('[API CLIENT] Initialized with baseURL:', AppConfig.API_BASE_URL);
