@@ -1,0 +1,1 @@
+export { openInMaps } from './googleMaps';
