@@ -10,12 +10,16 @@ import { EmptyState } from '@/ui/components/EmptyState';
 import { ErrorState } from '@/ui/components/ErrorState';
 import { LoadingSkeletonList } from '@/ui/components/LoadingSkeletonList';
 import { ScreenHeader } from '@/ui/components/ScreenHeader';
+import { FilterChip } from '@/ui/components/FilterChip';
 import { storage } from '@/services/storage/localStorage';
+import { useTheme } from '@/ui/context/ThemeContext';
 
 type Props = NativeStackScreenProps<EventsStackParamList, 'EventList'>;
 type SortOption = 'default' | 'date-asc' | 'date-desc' | 'price-low' | 'price-high';
 
 export const EventListScreen: React.FC<Props> = ({ navigation }) => {
+    const theme = useTheme();
+
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
@@ -161,10 +165,15 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
         <TouchableOpacity
             key={label}
             data-testid={`filter-chip-${label.toLowerCase().replace(/\s+/g, '-')}`}
-            className={`mr-2 rounded-full border px-3 py-2 ${active ? 'bg-[#02757A] border-[#02757A]' : 'bg-white border-gray-200'}`}
+            style={{
+                marginRight: 8, borderRadius: 20, borderWidth: 1,
+                paddingHorizontal: 12, paddingVertical: 8,
+                backgroundColor: active ? '#02757A' : theme.chipBg,
+                borderColor: active ? '#02757A' : theme.chipBorder,
+            }}
             onPress={onPress}
         >
-            <Text className={`text-xs font-semibold ${active ? 'text-white' : 'text-gray-700'}`}>{label}</Text>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: active ? '#fff' : theme.chipText }}>{label}</Text>
         </TouchableOpacity>
     );
 
@@ -187,7 +196,7 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
     const renderFooter = () => {
         if (!isFetchingNextPage) return null;
         return (
-            <View className="py-4">
+            <View style={{ paddingVertical: 16 }}>
                 <ActivityIndicator size="small" color="#02757A" />
             </View>
         );
@@ -208,10 +217,10 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
     ];
 
     return (
-        <View className="flex-1 bg-[#f2f6f6]">
-            <View className="bg-[#efe9f6] px-5 pt-12 pb-6">
-                <View className="absolute right-[-30px] top-[-20px] h-28 w-28 rounded-full bg-[#e3daf0]" />
-                <View className="absolute left-[-20px] bottom-[-30px] h-24 w-24 rounded-full bg-[#e3daf0]" />
+        <View style={{ flex: 1, backgroundColor: theme.bg }}>
+            <View style={{ backgroundColor: theme.headerBgEvents, paddingHorizontal: 20, paddingTop: 48, paddingBottom: 24, overflow: 'visible' }}>
+                <View style={{ position: 'absolute', right: 0, top: 0, height: 112, width: 112, borderRadius: 56, backgroundColor: theme.headerCircleEvents }} />
+                <View style={{ position: 'absolute', left: 0, bottom: 0, height: 96, width: 96, borderRadius: 48, backgroundColor: theme.headerCircleEvents }} />
                 <ScreenHeader
                     title="Events"
                     subtitle="Live shows and community meetups"
@@ -219,18 +228,18 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
                         <TouchableOpacity
                             data-testid="sort-button"
                             onPress={() => setShowSortMenu(!showSortMenu)}
-                            className="bg-white rounded-full px-4 py-2"
-                            style={{ shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 6, elevation: 2 }}
+                            style={{ backgroundColor: theme.card, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 6, elevation: 2 }}
                         >
-                            <Text className="text-xs font-semibold text-gray-700">Sort ▼</Text>
+                            <Text style={{ fontSize: 12, fontWeight: '700', color: theme.sectionLabel }}>Sort ▼</Text>
                         </TouchableOpacity>
                     }
                 />
-                <View className="mt-4">
+                <View style={{ marginTop: 16 }}>
                     <TextInput
                         data-testid="search-input"
-                        className="bg-white px-4 py-3 rounded-2xl text-base text-gray-900"
+                        style={{ backgroundColor: theme.inputBg, paddingHorizontal: 16, paddingVertical: 12, borderRadius: 18, fontSize: 14, color: theme.inputText }}
                         placeholder="Search events, venues, or categories"
+                        placeholderTextColor={theme.inputPlaceholder}
                         value={query}
                         onChangeText={setQuery}
                     />
@@ -238,18 +247,15 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
             </View>
 
             {showSortMenu && (
-                <View className="bg-white mx-5 rounded-2xl shadow-lg mb-2" style={{ elevation: 4 }}>
+                <View style={{ position: 'absolute', top: 100, right: 20, zIndex: 100, backgroundColor: theme.card, borderRadius: 16, elevation: 8, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, minWidth: 200 }}>
                     {sortOptions.map((option) => (
                         <TouchableOpacity
                             key={option.value}
                             data-testid={`sort-option-${option.value}`}
-                            className={`px-4 py-3 border-b border-gray-100 ${sortBy === option.value ? 'bg-[#02757A]/10' : ''}`}
-                            onPress={() => {
-                                setSortBy(option.value as SortOption);
-                                setShowSortMenu(false);
-                            }}
+                            style={{ paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: theme.border, backgroundColor: sortBy === option.value ? '#efe9f6' : 'transparent' }}
+                            onPress={() => { setSortBy(option.value as SortOption); setShowSortMenu(false); }}
                         >
-                            <Text className={`text-sm font-semibold ${sortBy === option.value ? 'text-[#02757A]' : 'text-gray-900'}`}>
+                            <Text style={{ fontSize: 14, fontWeight: '600', color: sortBy === option.value ? '#02757A' : theme.text }}>
                                 {option.label}
                             </Text>
                         </TouchableOpacity>
@@ -257,22 +263,26 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
                 </View>
             )}
 
-            <View className="px-5 -mt-4">
-                <View className="bg-white rounded-3xl p-4 shadow-sm" style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }}>
-                    <View className="flex-row items-center justify-between">
-                        <Text className="text-sm font-semibold text-gray-800">Quick filters</Text>
-                        <Text className="text-xs text-gray-500">{filteredCount} events</Text>
+            <View style={{ paddingHorizontal: 20, marginTop: -16, zIndex: 1 }}>
+                <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 16, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Text style={{ fontSize: 13, fontWeight: '700', color: theme.sectionLabel }}>Quick filters</Text>
+                        <Text style={{ fontSize: 12, color: theme.subtext }}>{filteredCount} events</Text>
                     </View>
-                    <View className="flex-row mt-3">
+                    <View style={{ flexDirection: 'row', marginTop: 12 }}>
                         {renderChip('Upcoming', dateFilter === 'upcoming', () => setDateFilter(dateFilter === 'upcoming' ? null : 'upcoming'))}
                         {renderChip('This Week', dateFilter === 'week', () => setDateFilter(dateFilter === 'week' ? null : 'week'))}
                         {renderChip('Past', dateFilter === 'past', () => setDateFilter(dateFilter === 'past' ? null : 'past'))}
                     </View>
-                    <View className="flex-row mt-3 flex-wrap">
+                    <View style={{ flexDirection: 'row', marginTop: 10, flexWrap: 'wrap' }}>
                         {categoryOptions.map((category) =>
-                            renderChip(category, categoryFilter === category, () =>
-                                setCategoryFilter(categoryFilter === category ? null : category)
-                            )
+                            <FilterChip
+                                key={category}
+                                label={category}
+                                selected={categoryFilter === category}
+                                onPress={() => setCategoryFilter(categoryFilter === category ? null : category)}
+                                testID={`filter-chip-${category.toLowerCase().replace(/\s+/g, '-')}`}
+                            />
                         )}
                     </View>
                 </View>
@@ -287,7 +297,7 @@ export const EventListScreen: React.FC<Props> = ({ navigation }) => {
                     data={filteredAndSortedEvents}
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
-                    contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32, paddingTop: 20 }}
+                    contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, paddingTop: 20 }}
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
                     ListFooterComponent={renderFooter}

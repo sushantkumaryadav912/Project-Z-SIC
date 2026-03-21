@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import { Restaurant } from '@/domains/restaurants/types';
+import { useTheme } from '@/ui/context/ThemeContext';
 
 interface RestaurantCardProps {
     item: Restaurant;
@@ -8,6 +9,8 @@ interface RestaurantCardProps {
 }
 
 export const RestaurantCard = memo<RestaurantCardProps>(({ item, onPress }) => {
+    const theme = useTheme();
+
     const getCuisineTags = (item: Restaurant) => {
         if (Array.isArray(item.cuisineTags)) return item.cuisineTags;
         if (Array.isArray(item.cuisines)) return item.cuisines;
@@ -35,45 +38,89 @@ export const RestaurantCard = memo<RestaurantCardProps>(({ item, onPress }) => {
     const cuisines = getCuisineTags(item);
     const priceValue = getPriceValue(item);
     const imageUrl = item.imageUrl || item.images?.[0];
+    const isVeg = isVegRestaurant(item);
 
     return (
         <TouchableOpacity
             data-testid={`restaurant-card-${item._id}`}
-            className="bg-white rounded-3xl overflow-hidden mb-4 shadow-sm"
-            style={{ shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 10, elevation: 2 }}
+            activeOpacity={0.92}
+            style={{
+                backgroundColor: theme.card,
+                borderRadius: 24,
+                overflow: 'hidden',
+                marginBottom: 18,
+                shadowColor: '#02757A',
+                shadowOpacity: 0.10,
+                shadowRadius: 16,
+                shadowOffset: { width: 0, height: 4 },
+                elevation: 4,
+            }}
             onPress={() => onPress(item._id || 'unknown')}
         >
-            <View className="h-40 bg-gray-100">
+            <View style={{ height: 180, backgroundColor: '#e8f4f4' }}>
                 {imageUrl ? (
-                    <Image source={{ uri: imageUrl }} className="h-40 w-full" />
+                    <ImageBackground source={{ uri: imageUrl }} style={{ flex: 1 }} resizeMode="cover">
+                        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 80, backgroundColor: 'rgba(0,0,0,0.38)' }} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 12 }}>
+                            {isVeg && (
+                                <View style={{ backgroundColor: '#16a34a', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
+                                    <Text style={{ color: '#fff', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 }}>🌿 PURE VEG</Text>
+                                </View>
+                            )}
+                            {priceValue !== null && (
+                                <View style={{ marginLeft: 'auto', backgroundColor: 'rgba(0,0,0,0.55)', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 }}>
+                                    <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700' }}>₹{priceValue} for two</Text>
+                                </View>
+                            )}
+                        </View>
+                    </ImageBackground>
                 ) : (
-                    <View className="flex-1 items-center justify-center">
-                        <Text className="text-xs text-gray-500">No image</Text>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 40 }}>🍽️</Text>
+                        <Text style={{ fontSize: 12, color: theme.subtext, marginTop: 6 }}>No image available</Text>
                     </View>
                 )}
             </View>
-            <View className="p-4">
-                <Text className="text-base font-bold text-gray-900" numberOfLines={1}>
-                    {item.name || 'Unnamed Restaurant'}
-                </Text>
-                {cuisines.length > 0 && (
-                    <Text className="text-sm text-gray-600 mt-1" numberOfLines={1}>
-                        {cuisines.join(' • ')}
+
+            <View style={{ padding: 16 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 17, fontWeight: '800', color: theme.text, flex: 1, marginRight: 8 }} numberOfLines={1}>
+                        {item.name || 'Unnamed Restaurant'}
                     </Text>
-                )}
-                {priceValue !== null && (
-                    <Text className="text-xs font-semibold text-[#02757A] mt-2">From ₹{priceValue}</Text>
-                )}
-                {isVegRestaurant(item) && (
-                    <View className="mt-2 bg-emerald-50 px-2 py-1 rounded-full self-start">
-                        <Text className="text-[11px] font-semibold text-emerald-700">Pure Veg</Text>
+                    {item.rating && (
+                        <View style={{ backgroundColor: '#02757A', borderRadius: 12, paddingHorizontal: 8, paddingVertical: 3 }}>
+                            <Text style={{ color: '#fff', fontSize: 12, fontWeight: '700' }}>⭐ {item.rating}</Text>
+                        </View>
+                    )}
+                </View>
+
+                {cuisines.length > 0 && (
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 8, gap: 6 }}>
+                        {cuisines.slice(0, 3).map((c) => (
+                            <View key={c} style={{ backgroundColor: theme.chipBg, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: theme.chipBorder }}>
+                                <Text style={{ fontSize: 11, color: theme.chipText, fontWeight: '600' }}>{c}</Text>
+                            </View>
+                        ))}
                     </View>
                 )}
+
+                {item.description ? (
+                    <Text style={{ fontSize: 12, color: theme.subtext, marginTop: 8, lineHeight: 18 }} numberOfLines={2}>
+                        {item.description}
+                    </Text>
+                ) : null}
+
+                <View style={{ height: 1, backgroundColor: theme.border, marginTop: 12, marginBottom: 10 }} />
+
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 12, color: theme.subtext, fontWeight: '500' }}>Tap to explore menu</Text>
+                    <View style={{ backgroundColor: '#02757A', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}>
+                        <Text style={{ color: '#fff', fontSize: 12, fontWeight: '700' }}>View →</Text>
+                    </View>
+                </View>
             </View>
         </TouchableOpacity>
     );
-}, (prevProps, nextProps) => {
-    return prevProps.item._id === nextProps.item._id;
-});
+}, () => false);
 
 RestaurantCard.displayName = 'RestaurantCard';

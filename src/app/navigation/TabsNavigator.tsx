@@ -8,6 +8,8 @@ import { RestaurantListScreen } from '@/domains/restaurants/screens/RestaurantLi
 import { SettingsScreen } from '@/domains/settings/screens/SettingsScreen';
 import { TiffinDetailScreen } from '@/domains/tiffins/screens/TiffinDetailScreen';
 import { TiffinListScreen } from '@/domains/tiffins/screens/TiffinListScreen';
+import { EditProfileScreen } from '@/domains/settings/screens/EditProfileScreen';
+import { Ionicons } from '@expo/vector-icons';
 import type {
     EventsStackParamList,
     MainTabsParamList,
@@ -46,12 +48,41 @@ const EventsStackNavigator = () => (
 const SettingsStackNavigator = () => (
     <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
         <SettingsStack.Screen name="Settings" component={SettingsScreen} />
+        <SettingsStack.Screen name="EditProfile" component={EditProfileScreen} />
     </SettingsStack.Navigator>
 );
 
 export const TabsNavigator = () => {
     return (
-        <Tab.Navigator screenOptions={{ headerShown: false }}>
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                headerShown: false,
+                tabBarStyle: {
+                    backgroundColor: '#ffffff',
+                    borderTopColor: '#f3f4f6',
+                    borderTopWidth: 1,
+                    height: 90,
+                    paddingBottom: 30,
+                    paddingTop: 8,
+                },
+                tabBarActiveTintColor: '#02757A',
+                tabBarInactiveTintColor: '#6b7280',
+                tabBarLabelStyle: {
+                    fontSize: 11,
+                    fontWeight: '600',
+                },
+                tabBarIcon: ({ focused, color, size }) => {
+                    const icons: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
+                        RestaurantsStack: { active: 'restaurant', inactive: 'restaurant-outline' },
+                        TiffinStack: { active: 'fast-food', inactive: 'fast-food-outline' },
+                        EventsStack: { active: 'calendar', inactive: 'calendar-outline' },
+                        SettingsStack: { active: 'settings', inactive: 'settings-outline' },
+                    };
+                    const icon = icons[route.name];
+                    return <Ionicons name={focused ? icon.active : icon.inactive} size={22} color={color} />;
+                },
+            })}
+        >
             <Tab.Screen name="RestaurantsStack" component={RestaurantsStackNavigator} options={{ title: 'Restaurants' }} />
             <Tab.Screen name="TiffinStack" component={TiffinStackNavigator} options={{ title: 'Tiffin' }} />
             <Tab.Screen name="EventsStack" component={EventsStackNavigator} options={{ title: 'Events' }} />

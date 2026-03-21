@@ -5,10 +5,12 @@ import { RootStackParamList } from '@/app/navigation/types';
 import { ScreenHeader } from '@/ui/components/ScreenHeader';
 import { useGlobalSearch } from '../hooks/useGlobalSearch';
 import { SearchResultsSection } from '../components/SearchResultsSection';
+import { useTheme } from '@/ui/context/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Search'>;
 
 export const SearchScreen: React.FC<Props> = ({ navigation }) => {
+    const theme = useTheme();
     const [query, setQuery] = useState('');
     const trimmedQuery = useMemo(() => query.trim(), [query]);
     const { data, isLoading } = useGlobalSearch(trimmedQuery);
@@ -37,35 +39,37 @@ export const SearchScreen: React.FC<Props> = ({ navigation }) => {
         });
     };
 
+
     return (
-        <View className="flex-1 bg-[#f2f6f6]">
-            <View className="bg-[#f0f4ff] px-5 pt-12 pb-6">
-                <View className="absolute right-[-30px] top-[-20px] h-28 w-28 rounded-full bg-[#e1e9ff]" />
-                <View className="absolute left-[-20px] bottom-[-30px] h-24 w-24 rounded-full bg-[#e1e9ff]" />
+        <View style={{ flex: 1, backgroundColor: theme.bg }}>
+            <View style={{ backgroundColor: theme.headerBgSettings, paddingHorizontal: 20, paddingTop: 48, paddingBottom: 24, overflow: 'visible' }}>
+                <View style={{ position: 'absolute', right: -30, top: -20, height: 112, width: 112, borderRadius: 56, backgroundColor: theme.headerCircleSettings }} />
+                <View style={{ position: 'absolute', left: -20, bottom: -30, height: 96, width: 96, borderRadius: 48, backgroundColor: theme.headerCircleSettings }} />
                 <ScreenHeader title="Search" subtitle="Find restaurants, tiffins, and events" showSearch={false} />
-                <View className="mt-4">
+                <View style={{ marginTop: 16, zIndex: 1 }}>
                     <TextInput
-                        className="bg-white px-4 py-3 rounded-2xl text-base text-gray-900"
+                        style={{ backgroundColor: theme.inputBg, paddingHorizontal: 16, paddingVertical: 12, borderRadius: 16, fontSize: 16, color: theme.inputText }}
                         placeholder="Search"
+                        placeholderTextColor={theme.inputPlaceholder}
                         value={query}
                         onChangeText={setQuery}
                     />
                 </View>
             </View>
-            <View className="px-5 -mt-4">
-                <View className="bg-white rounded-3xl p-4 shadow-sm" style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }}>
+            <View style={{ paddingHorizontal: 20, marginTop: -16, zIndex: 1 }}>
+                <View style={{ backgroundColor: theme.card, borderRadius: 24, padding: 16, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }}>
                 {trimmedQuery.length === 0 ? (
-                    <Text className="text-sm text-gray-500 mt-2">
+                    <Text style={{ fontSize: 14, color: theme.subtext, marginTop: 8 }}>
                         Start typing to search across categories.
                     </Text>
                 ) : isLoading ? (
-                    <View className="mt-4 items-center">
+                    <View style={{ marginTop: 16, alignItems: 'center' }}>
                         <ActivityIndicator color="#02757A" />
                     </View>
                 ) : (
-                    <View className="mt-4">
+                    <View style={{ marginTop: 16 }}>
                         {data ? (
-                            <Text className="text-xs text-gray-500 mb-3">
+                            <Text style={{ fontSize: 12, color: theme.subtext, marginBottom: 12 }}>
                                 {data.restaurants.length + data.tiffins.length + data.events.length} results
                             </Text>
                         ) : null}
@@ -88,7 +92,7 @@ export const SearchScreen: React.FC<Props> = ({ navigation }) => {
                         data.restaurants.length === 0 &&
                         data.tiffins.length === 0 &&
                         data.events.length === 0 ? (
-                            <Text className="text-sm text-gray-500 mt-4 text-center">No results found.</Text>
+                            <Text style={{ fontSize: 14, color: theme.subtext, marginTop: 16, textAlign: 'center' }}>No results found.</Text>
                         ) : null}
                     </View>
                 )}

@@ -1,6 +1,14 @@
 import axios from 'axios';
 import { AppConfig } from '@/platform/config';
 
+const DEFAULT_API_BASE_URL = 'https://project-z-backend-apis.onrender.com';
+
+const getApiBaseUrl = (): string => {
+    const raw = process.env.EXPO_PUBLIC_API_BASE_URL;
+    const baseUrl = (raw && raw.trim().length > 0 ? raw.trim() : DEFAULT_API_BASE_URL).replace(/\/+$/, '');
+    return baseUrl;
+};
+
 export const apiClient = axios.create({
     baseURL: AppConfig.API_BASE_URL,
     headers: {
